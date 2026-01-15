@@ -1,8 +1,97 @@
 package ru.ugaforever.repository;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+import ru.ugaforever.dto.PostDTO;
 import ru.ugaforever.model.Post;
-import java.util.List;
 
-public interface PostRepository {
-    List<Post> findAll();
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public class PostRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public PostRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    // RowMapper для PostDTO
+    private final RowMapper<PostDTO> postRowMapper = (rs, rowNum) -> {
+        PostDTO post = new PostDTO();
+        post.setId(rs.getLong("id"));
+        post.setTitle(rs.getString("title"));
+        post.setText(rs.getString("text"));
+        //post.setImage(rs.getBytes("image"));
+
+        post.setLikeCount(rs.getInt("like_count"));
+
+        //TODO - complite RowMapper
+
+        /*
+        Timestamp updatedAt = rs.getTimestamp("updated_at");
+        if (updatedAt != null) {
+            post.setUpdatedAt(updatedAt.toLocalDateTime());
+        }
+
+        post.setPublished(rs.getBoolean("published"));
+        post.setViewCount(rs.getInt("view_count"));
+        post.setLikeCount(rs.getInt("like_count"));
+        post.setCommentCount(rs.getInt("comment_count"));
+        post.setCategory(rs.getString("category"));
+        post.setImageUrl(rs.getString("image_url"));
+
+        // Получаем теги отдельным запросом
+        List<String> tags = getTagsForPost(post.getId());
+        post.setTags(tags);*/
+
+        return post;
+    };
+
+    public List<Post> findAll() {
+        // Выполняем запрос с помощью JdbcTemplate
+        // Преобразовываем ответ с помощью RowMapper
+
+        List<Post> posts = new ArrayList<>();
+        for (long i = 1; i <= 3; i++) {
+            Post post = new Post();
+            post.setId(i);
+            post.setTitle("title" + i);
+            post.setText("text" + i);
+            post.setLikesCount((int) i);
+            post.setCommentsCount((int) i);
+            posts.add(post);
+        }
+
+        return posts;
+
+        /*return jdbcTemplate.query(
+                "select id, first_name, last_name, age, active from users",
+                (rs, rowNum) -> new Post(
+                        rs.getLong("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getInt("age"),
+                        rs.getBoolean("active")
+                ));*/
+    }
+
+    public Optional<PostDTO> findById(Long id) {
+        String sql = "SELECT * FROM posts WHERE id = ?";
+
+        try {
+            PostDTO post = jdbcTemplate.queryForObject(sql, postRowMapper, id);
+
+            // Увеличиваем счетчик просмотров
+            //incrementViewCount(id);
+
+            return Optional.ofNullable(post);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
 }
