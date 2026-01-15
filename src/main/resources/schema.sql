@@ -1,47 +1,14 @@
--- Таблица с постами
-create table if not exists posts(
-    id bigserial primary key,
-    title varchar(256) not null);
-    /*,
-    text varchar(256) not null,
-    age integer not null,
-    active boolean not null);*/
-
-/*{
-        "id": 1,
-        "title": "Название поста 1",
-        "text": "Текст поста в формате Markdown...",
-        "tags": ["tag_1", "tag_2"],
-        "likesCount": 5,
-        "commentsCount": 1
-      },*/
-
-
-    /*
-    -- Таблица постов
 CREATE TABLE IF NOT EXISTS posts (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    content TEXT NOT NULL,
-    author VARCHAR(100) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_published BOOLEAN DEFAULT TRUE
-);
+    title VARCHAR(200) NOT NULL UNIQUE,
+    text VARCHAR NOT NULL,
+    image BLOB,
+    tags CLOB  DEFAULT '[]',
+    comments CLOB DEFAULT '[]',
+    like_count INT DEFAULT 0
+    );
 
--- Таблица комментариев
-CREATE TABLE IF NOT EXISTS comments (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    content TEXT NOT NULL,
-    author VARCHAR(100) NOT NULL,
-    email VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    post_id BIGINT NOT NULL,
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
-);
-
--- Индексы для оптимизации запросов
-CREATE INDEX idx_post_id ON comments(post_id);
-CREATE INDEX idx_posts_created_at ON posts(created_at DESC);
-CREATE INDEX idx_comments_created_at ON comments(created_at DESC);
-    */
+INSERT INTO posts (title, text, tags) VALUES ('Пост про JSON', 'JSON (JavaScript Object Notation) — текстовый формат обмена данными','["java", "json", "rest"]');
+INSERT INTO posts (title, text, tags, comments) VALUES ('Пост про H2', 'H2 — открытая кроссплатформенная СУБД, полностью написанная на языке Java','["java", "h2"]', '["комментарий 1", "комментарий 2"]');
+INSERT INTO posts (title, text) VALUES ('Пост про море', 'Море это кайф!');
+INSERT INTO posts (title, text, comments) VALUES ('Пост про солнце', 'Солнце это лето!', '["Комментарий про солнце"]');
