@@ -1,5 +1,9 @@
 package ru.ugaforever.repository;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -14,9 +18,11 @@ import java.util.Optional;
 public class PostRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final ObjectMapper objectMapper;
 
-    public PostRepository(JdbcTemplate jdbcTemplate) {
+    public PostRepository(JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
         this.jdbcTemplate = jdbcTemplate;
+        this.objectMapper = objectMapper;
     }
 
     // RowMapper для PostDTO
@@ -25,9 +31,34 @@ public class PostRepository {
         post.setId(rs.getLong("id"));
         post.setTitle(rs.getString("title"));
         post.setText(rs.getString("text"));
-        //post.setImage(rs.getBytes("image"));
 
-        post.setLikeCount(rs.getInt("like_count"));
+        //iamge
+        post.setTags(rs.getString("tags"));
+        //post.setComments(rs.getString("comments"));
+        post.setLikesCount(rs.getInt("like_count"));
+
+        String json_comments = rs.getString("comments");
+        post.setCommentsCount(countElementsWithJackson(json_comments));
+
+        //commentsCount
+        /*String strTags = rs.getString("tags");
+        if (strTags != null){
+            ObjectMapper mapper = new ObjectMapper();
+
+            // Парсинг строки JSON в List<String>
+            List<String> tags = null;
+            try {
+                tags = mapper.readValue(strTags,
+                        mapper.getTypeFactory().constructCollectionType(List.class, String.class));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
+            post.setTags(tags);
+        }*/
+
+
+
 
         //TODO - complite RowMapper
 
@@ -50,6 +81,16 @@ public class PostRepository {
 
         return post;
     };
+
+    private int countElementsWithJackson(String jsonArray) {
+        try {
+            JsonNode node = objectMapper.readTree(jsonArray);
+            return node.isArray() ? node.size() : 0;
+        } catch (Exception e) {
+            //TODO обработать некорректный JSON
+            return 0;
+        }
+    }
 
     public List<Post> findAll() {
         // Выполняем запрос с помощью JdbcTemplate
@@ -84,9 +125,6 @@ public class PostRepository {
 
         try {
             PostDTO post = jdbcTemplate.queryForObject(sql, postRowMapper, id);
-
-            // Увеличиваем счетчик просмотров
-            //incrementViewCount(id);
 
             return Optional.ofNullable(post);
         } catch (Exception e) {

@@ -2,10 +2,10 @@ CREATE TABLE IF NOT EXISTS posts (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(200) NOT NULL UNIQUE,
     text VARCHAR NOT NULL,
-    image BLOB,
-    tags CLOB  DEFAULT '[]',
-    comments CLOB DEFAULT '[]',
-    like_count INT DEFAULT 0
+    --image BLOB,
+    tags VARCHAR NOT NULL DEFAULT '[]',
+    comments VARCHAR NOT NULL DEFAULT '[]',
+    like_count INT NOT NULL DEFAULT 0
     );
 
 INSERT INTO posts (title, text, tags) VALUES ('Пост про JSON', 'JSON (JavaScript Object Notation) — текстовый формат обмена данными','["java", "json", "rest"]');

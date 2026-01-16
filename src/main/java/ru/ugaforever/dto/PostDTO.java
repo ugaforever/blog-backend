@@ -1,15 +1,19 @@
 package ru.ugaforever.dto;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostDTO {
     private Long id;
     private String title;
     private String text;
     private byte[] image;
-    private List<String> tags;
-    private List<String> comments;
-    private int likeCount;
+    //private List<String> tags;
+    private String tags;
+    //private List<String> comments;
+    private String comments;
+    private int likesCount;
+    private int commentsCount;
 
     public Long getId() {
         return id;
@@ -43,35 +47,37 @@ public class PostDTO {
         this.image = image;
     }
 
-    public List<String> getTags() {
+    public String getTags() {
         return tags;
     }
 
-    public void setTags(List<String> tags) {
+    public void setTags(String tags) {
         this.tags = tags;
     }
 
-    public List<String> getComments() {
+    public String getComments() {
         return comments;
     }
 
-    public void setComments(List<String> comments) {
+    public void setComments(String comments) {
         this.comments = comments;
     }
 
-    public int getLikeCount() {
-        return likeCount;
+    public int getLikesCount() {
+        return likesCount;
     }
 
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
     }
 
+    public int getCommentsCount() {
+        return commentsCount;
+    }
 
-
-
-    // Вложенные комментарии (опционально)
-    //private List<CommentDTO> comments;
+    public void setCommentsCount(int commentsCount) {
+        this.commentsCount = commentsCount;
+    }
 
 
 }
