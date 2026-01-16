@@ -10,8 +10,6 @@ import ru.ugaforever.model.Post;
 //не должно быть зависимостей, нарушение архитектуры
 //import ru.ugaforever.dto.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,8 +65,24 @@ public class PostRepository {
         List<Post> posts = jdbcTemplate.query(sql, postRowMapper, id);
 
         // Берём первый элемент если есть
-        return posts.isEmpty() ? Optional.empty() : Optional.of(posts.get(0));
+        return posts.isEmpty() ? Optional.empty() : Optional.of(posts.getFirst());
     }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM posts WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     /*public Optional<PostDTO> createPost(Post post) {
 

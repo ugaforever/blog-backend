@@ -49,6 +49,12 @@ public class PostService {
     }
 
     // DTO -> Model
+    public void deleteById(Long id) {
+        postRepository.deleteById(id);
+
+    }
+
+    // DTO -> Model
     /*public PostDTO createPost(PostCreateDTO postDTO) {
         Optional<PostDTO> postOpt = postRepository.createPost(postDTO);
         if (postOpt.isEmpty()) {

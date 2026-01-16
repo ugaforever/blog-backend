@@ -9,9 +9,8 @@ public class JacksonConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
         //mapper.registerModule(new JavaTimeModule());
         // Дополнительные настройки если нужно
-        return mapper;
+        return new ObjectMapper();
     }
 }
