@@ -1,13 +1,10 @@
 package ru.ugaforever.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class Post {
     private Long id;
     private String title;
     private String text;
-    private Set<String> tags = new HashSet<>();     //"tags": ["tag_1", "tag_2"],
+    private String tags;
     private int likesCount;
     private int commentsCount;
 
@@ -35,11 +32,11 @@ public class Post {
         this.text = text;
     }
 
-    public Set<String> getTags() {
+    public String getTags() {
         return tags;
     }
 
-    public void setTags(Set<String> tags) {
+    public void setTags(String tags) {
         this.tags = tags;
     }
 

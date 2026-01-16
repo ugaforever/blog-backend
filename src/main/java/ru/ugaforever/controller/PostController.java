@@ -3,10 +3,11 @@ package ru.ugaforever.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ugaforever.dto.PostDTO;
-import ru.ugaforever.model.Post;
 import ru.ugaforever.service.PostService;
 
-import java.util.ArrayList;
+//не должно быть зависимостей, нарушение архитектуры
+//import ru.ugaforever.model.*;
+
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class PostController {
      * @apiNote GET: /api/posts?search=Lalala&pageNumber=1&pageSize=5
      */
     @GetMapping("/posts")
-    public List<Post> getUsers() {
+    public List<PostDTO> getUsers() {
         return postService.findAll();
     }
 
@@ -43,7 +44,12 @@ public class PostController {
     @GetMapping("/posts/{id}")
     public ResponseEntity<PostDTO> getPost(@PathVariable("id") Long id) {
         PostDTO post = postService.getPostById(id);
-        return ResponseEntity.ok(post);
+
+        if (post == null) {
+            return ResponseEntity.notFound().build(); // HTTP 404
+        }
+
+        return ResponseEntity.ok(post); // HTTP 200
     }
 
     /**
@@ -55,28 +61,16 @@ public class PostController {
      * @return созданный пост в JSON ({"id":3,"title":"Название поста 3","text":"Текст поста в формате Markdown...","tags":["tag_1","tag_2"],"likesCount":0,"commentsCount":0})
      * @apiNote POST /api/posts ({"title":"Название поста 3","text":"Текст поста в формате Markdown...","tags":["tag_1","tag_2"]})
      */
-    @PostMapping("/api/posts")
-    //public ResponseEntity<PostDTO> createPost(
-    public void createPost() {
-    }
-/*
-            @Parameter(title = "Данные поста", required = true)
-            @Valid @RequestBody PostDTO postDTO,
-
-            @Parameter(hidden = true)
-            @AuthenticationPrincipal UserDetails userDetails) {
-
+    /*@PostMapping("/api/posts")
+    public ResponseEntity<PostDTO> createPost(@RequestBody PostCreateDTO postDTO,
+                                              UriComponentsBuilder uriBuilder) {
         PostDTO createdPost = postService.createPost(postDTO);
-        */
-/*URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
+
+        URI location = uriBuilder
                 .path("/{id}")
                 .buildAndExpand(createdPost.getId())
                 .toUri();
-*//*
 
         return ResponseEntity.created(location).body(createdPost);
-*/
-
-
+    }*/
 }

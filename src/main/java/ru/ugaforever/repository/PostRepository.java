@@ -1,16 +1,17 @@
 package ru.ugaforever.repository;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.ugaforever.dto.PostDTO;
 import ru.ugaforever.model.Post;
 
+//не должно быть зависимостей, нарушение архитектуры
+//import ru.ugaforever.dto.*;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,59 +26,19 @@ public class PostRepository {
         this.objectMapper = objectMapper;
     }
 
-    // RowMapper для PostDTO
-    private final RowMapper<PostDTO> postRowMapper = (rs, rowNum) -> {
-        PostDTO post = new PostDTO();
+    private final RowMapper<Post> postRowMapper = (rs, rowNum) -> {
+        Post post = new Post();
         post.setId(rs.getLong("id"));
         post.setTitle(rs.getString("title"));
         post.setText(rs.getString("text"));
 
-        //iamge
-        post.setTags(rs.getString("tags"));
-        //post.setComments(rs.getString("comments"));
-        post.setLikesCount(rs.getInt("like_count"));
+        // Парсинг тегов
+        //String tagsJson = rs.getString("tags");
+        //post.setTags(parseTags(tagsJson));
 
-        String json_comments = rs.getString("comments");
-        post.setCommentsCount(countElementsWithJackson(json_comments));
-
-        //commentsCount
-        /*String strTags = rs.getString("tags");
-        if (strTags != null){
-            ObjectMapper mapper = new ObjectMapper();
-
-            // Парсинг строки JSON в List<String>
-            List<String> tags = null;
-            try {
-                tags = mapper.readValue(strTags,
-                        mapper.getTypeFactory().constructCollectionType(List.class, String.class));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-
-            post.setTags(tags);
-        }*/
-
-
-
-
-        //TODO - complite RowMapper
-
-        /*
-        Timestamp updatedAt = rs.getTimestamp("updated_at");
-        if (updatedAt != null) {
-            post.setUpdatedAt(updatedAt.toLocalDateTime());
-        }
-
-        post.setPublished(rs.getBoolean("published"));
-        post.setViewCount(rs.getInt("view_count"));
-        post.setLikeCount(rs.getInt("like_count"));
-        post.setCommentCount(rs.getInt("comment_count"));
-        post.setCategory(rs.getString("category"));
-        post.setImageUrl(rs.getString("image_url"));
-
-        // Получаем теги отдельным запросом
-        List<String> tags = getTagsForPost(post.getId());
-        post.setTags(tags);*/
+        // Подсчет комментариев
+        String commentsJson = rs.getString("comments");
+        post.setCommentsCount(countElementsWithJackson(commentsJson));
 
         return post;
     };
@@ -88,48 +49,37 @@ public class PostRepository {
             return node.isArray() ? node.size() : 0;
         } catch (Exception e) {
             //TODO обработать некорректный JSON
-            return 0;
+            return -1;
         }
     }
 
     public List<Post> findAll() {
-        // Выполняем запрос с помощью JdbcTemplate
-        // Преобразовываем ответ с помощью RowMapper
+        String sql = "SELECT * FROM posts ORDER BY id";
 
-        List<Post> posts = new ArrayList<>();
-        for (long i = 1; i <= 3; i++) {
-            Post post = new Post();
-            post.setId(i);
-            post.setTitle("title" + i);
-            post.setText("text" + i);
-            post.setLikesCount((int) i);
-            post.setCommentsCount((int) i);
-            posts.add(post);
-        }
-
-        return posts;
-
-        /*return jdbcTemplate.query(
-                "select id, first_name, last_name, age, active from users",
-                (rs, rowNum) -> new Post(
-                        rs.getLong("id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getInt("age"),
-                        rs.getBoolean("active")
-                ));*/
+        // query() всегда возвращает List (может быть пустым)
+        return jdbcTemplate.query(sql, postRowMapper);
     }
 
-    public Optional<PostDTO> findById(Long id) {
+    public Optional<Post> findById(Long id) {
+        String sql = "SELECT * FROM posts WHERE id = ?";
+
+        // Используем query() с Optional
+        List<Post> posts = jdbcTemplate.query(sql, postRowMapper, id);
+
+        // Берём первый элемент если есть
+        return posts.isEmpty() ? Optional.empty() : Optional.of(posts.get(0));
+    }
+
+    /*public Optional<PostDTO> createPost(Post post) {
+
         String sql = "SELECT * FROM posts WHERE id = ?";
 
         try {
-            PostDTO post = jdbcTemplate.queryForObject(sql, postRowMapper, id);
+            PostDTO postDTO = jdbcTemplate.queryForObject(sql, postRowMapper, id);
 
-            return Optional.ofNullable(post);
+            return Optional.ofNullable(postDTO);
         } catch (Exception e) {
             return Optional.empty();
         }
-    }
-
+    }*/
 }
