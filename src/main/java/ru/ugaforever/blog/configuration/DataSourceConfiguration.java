@@ -1,4 +1,4 @@
-package ru.ugaforever.configuration;
+package ru.ugaforever.blog.configuration;
 
 import org.h2.Driver;
 import org.springframework.beans.factory.annotation.Value;

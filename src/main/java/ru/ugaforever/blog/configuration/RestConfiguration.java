@@ -1,4 +1,4 @@
-package ru.ugaforever.configuration;
+package ru.ugaforever.blog.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,17 +1,15 @@
-package ru.ugaforever.service;
+package ru.ugaforever.blog.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.ugaforever.dto.PostDTO;
-import ru.ugaforever.model.Post;
-import ru.ugaforever.repository.PostRepository;
+import ru.ugaforever.blog.dto.PostDTO;
+import ru.ugaforever.blog.model.Post;
+import ru.ugaforever.blog.repository.PostRepository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class PostService {
     private final PostRepository postRepository;
 
@@ -41,12 +39,15 @@ public class PostService {
     public PostDTO getPostById(Long id) {
         Optional<Post> postOpt = postRepository.findById(id);
         if (postOpt.isEmpty()) {
+            //TODO сейчас HTTP 500
             throw new RuntimeException("Post not found with id: " + id);
         }
 
         Post post = postOpt.get();
         return convertModelToDTO(post);
     }
+
+
 
     // DTO -> Model
     public void deleteById(Long id) {

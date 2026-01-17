@@ -1,9 +1,10 @@
-package ru.ugaforever.controller;
+package ru.ugaforever.blog.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ugaforever.dto.PostDTO;
-import ru.ugaforever.service.PostService;
+import ru.ugaforever.blog.dto.PostDTO;
+import ru.ugaforever.blog.dto.PostListDTO;
+import ru.ugaforever.blog.service.PostService;
 
 //не должно быть зависимостей, нарушение архитектуры
 //import ru.ugaforever.model.*;
@@ -29,8 +30,18 @@ public class PostController {
      * @apiNote GET: /api/posts?search=Lalala&pageNumber=1&pageSize=5
      */
     @GetMapping("/posts")
-    public List<PostDTO> getUsers() {
-        return postService.findAll();
+    public PostListDTO getPosts(@RequestParam("search") String search,
+                                @RequestParam("pageNumber") int pageNumber,
+                                @RequestParam("pageSize") int pageSize) {
+        PostListDTO listDTO =  new PostListDTO();
+
+        //TODO create findAllbySearch()
+        listDTO.setPosts(postService.findAll());
+        listDTO.setHasNext(false);
+        listDTO.setHasPrev(false);
+        listDTO.setLastPage(1);
+
+        return ResponseEntity.ok(listDTO).getBody(); // HTTP 200
     }
 
     /**

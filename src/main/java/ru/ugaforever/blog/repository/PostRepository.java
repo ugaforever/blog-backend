@@ -1,15 +1,17 @@
-package ru.ugaforever.repository;
+package ru.ugaforever.blog.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.ugaforever.model.Post;
+import ru.ugaforever.blog.model.Post;
 
 //не должно быть зависимостей, нарушение архитектуры
 //import ru.ugaforever.dto.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,19 +31,31 @@ public class PostRepository {
         post.setId(rs.getLong("id"));
         post.setTitle(rs.getString("title"));
         post.setText(rs.getString("text"));
+        //post.setTags(rs.getString("tags"));
 
         // Парсинг тегов
-        //String tagsJson = rs.getString("tags");
-        //post.setTags(parseTags(tagsJson));
+        String tagsJson = rs.getString("tags");
+        post.setTags(parseTags(tagsJson));
 
         // Подсчет комментариев
         String commentsJson = rs.getString("comments");
-        post.setCommentsCount(countElementsWithJackson(commentsJson));
+        post.setCommentsCount(countElements(commentsJson));
 
         return post;
     };
 
-    private int countElementsWithJackson(String jsonArray) {
+    private List<String> parseTags(String jsonTags){
+        try {
+            return objectMapper.readValue(
+                    jsonTags.trim(),
+                    new TypeReference<List<String>>() {});
+        } catch (Exception e) {
+            //TODO обработать некорректный JSON
+            return Collections.emptyList();
+        }
+    }
+
+    private int countElements(String jsonArray) {
         try {
             JsonNode node = objectMapper.readTree(jsonArray);
             return node.isArray() ? node.size() : 0;
@@ -72,11 +86,6 @@ public class PostRepository {
         String sql = "DELETE FROM posts WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
-
-
-
-
-
 
 
 

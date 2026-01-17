@@ -1,17 +1,12 @@
-package ru.ugaforever.dto;
+package ru.ugaforever.blog.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class PostDTO {
+public class Post {
     private Long id;
     private String title;
     private String text;
-    private byte[] image;
-    //private List<String> tags;
-    private String tags;
-    //private List<String> comments;
-    private String comments;
+    private List<String> tags;
     private int likesCount;
     private int commentsCount;
 
@@ -39,28 +34,12 @@ public class PostDTO {
         this.text = text;
     }
 
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
-    public String getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
-    public void setTags(String tags) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
     }
 
     public int getLikesCount() {
