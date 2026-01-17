@@ -10,6 +10,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+//не должно быть зависимостей, нарушение архитектуры
+//import ru.ugaforever.dto.*;
+
 @Repository
 public class ImageRepository {
     private final Path storagePath;
