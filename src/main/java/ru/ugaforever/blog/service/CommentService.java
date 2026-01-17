@@ -2,9 +2,7 @@ package ru.ugaforever.blog.service;
 
 import org.springframework.stereotype.Service;
 import ru.ugaforever.blog.dto.CommentDTO;
-import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.model.Comment;
-import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.CommentRepository;
 
 
@@ -28,7 +26,7 @@ public class CommentService {
     }
 
     // Model → DTO
-    public List<CommentDTO> getCommentsById(Long id) {
+    public List<CommentDTO> getAllCommentsById(Long id) {
         return commentRepository.findAll(id).stream()
                 .map(this::convertModelToDTO)
                 .collect(Collectors.toList());
