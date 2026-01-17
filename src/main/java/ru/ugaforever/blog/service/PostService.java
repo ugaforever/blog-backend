@@ -55,6 +55,10 @@ public class PostService {
 
     }
 
+    public int addLikeAndGetCount(Long id) {
+        return postRepository.addLikeAndGetCount(id);
+    }
+
     // DTO -> Model
     /*public PostDTO createPost(PostCreateDTO postDTO) {
         Optional<PostDTO> postOpt = postRepository.createPost(postDTO);

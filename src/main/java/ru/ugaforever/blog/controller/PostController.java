@@ -75,7 +75,22 @@ public class PostController {
         return ResponseEntity.ok().build();
     }
 
-    /*
+    /**
+     * Инкремент числа лайков поста
+     *
+     * @param id идентификатор поста
+     * @return 200 Ok, обновлённое число лайков поста (число в теле ответа)
+     * @apiNote POST: /api/posts/{id}/likes
+     */
+    @PostMapping("/posts/{id}/likes")
+    public ResponseEntity<Integer> incrementLikes(@PathVariable(name = "id") Long id) {
+        int likesCount = postService.addLikeAndGetCount(id);
+
+        // Возвращаем новое количество лайков
+        return ResponseEntity.ok(likesCount);
+    }
+
+        /*
       Создать новый пост
 
       @param title название поста

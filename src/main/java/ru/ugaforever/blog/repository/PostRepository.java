@@ -31,24 +31,24 @@ public class PostRepository {
         post.setId(rs.getLong("id"));
         post.setTitle(rs.getString("title"));
         post.setText(rs.getString("text"));
-        //post.setTags(rs.getString("tags"));
-
         // Парсинг тегов
         String tagsJson = rs.getString("tags");
         post.setTags(parseTags(tagsJson));
-
         // Подсчет комментариев
         String commentsJson = rs.getString("comments");
         post.setCommentsCount(countElements(commentsJson));
 
+        post.setLikesCount(rs.getInt("like_count"));
+        
         return post;
     };
 
-    private List<String> parseTags(String jsonTags){
+    private List<String> parseTags(String jsonTags) {
         try {
             return objectMapper.readValue(
                     jsonTags.trim(),
-                    new TypeReference<List<String>>() {});
+                    new TypeReference<List<String>>() {
+                    });
         } catch (Exception e) {
             //TODO обработать некорректный JSON
             return Collections.emptyList();
@@ -87,6 +87,15 @@ public class PostRepository {
         jdbcTemplate.update(sql, id);
     }
 
+    public int addLikeAndGetCount(Long id) {
+        String updateSql = "UPDATE posts SET like_count = like_count + 1 WHERE id = ?";
+        int updatedRows = jdbcTemplate.update(updateSql, id);
+
+        String selectSql = "SELECT like_count FROM posts WHERE id = ?";
+        return jdbcTemplate.queryForObject(selectSql, Integer.class, id);
+    }
+}
+
 
 
 
@@ -105,4 +114,3 @@ public class PostRepository {
             return Optional.empty();
         }
     }*/
-}
