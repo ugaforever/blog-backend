@@ -28,7 +28,7 @@ class ImageRepositoryTest {
         Optional<Image> testImage = imageRepository.findById(0L);
 
         // Проверяем, что Optional содержит объект
-        assertTrue(testImage.isPresent(), "Image should exist for id 1000");
+        assertTrue(testImage.isPresent(), "Image should exist for id 0");
 
         Image image = testImage.get();
         assertEquals(39787, image.getBody().length);
