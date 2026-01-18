@@ -20,7 +20,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class) // ✅ Только Mockito, без Spring (сравнение 2 подходов с.без контекста, смотри PostServiceTest)
 class ImageServiceTest {
 
     @Mock
@@ -31,18 +31,18 @@ class ImageServiceTest {
 
     @Test
     void testFindById() {
-        // 1. Настройка мока
+        // Настройка мока
         Long testId = 0L;
         Image testImage = new Image();
         testImage.setBody(getDebugJpgData());
 
         when(imageRepository.findById(testId)).thenReturn(Optional.of(testImage));
 
-        // 2. Вызов метода
+        // Вызов метода
         ImageDTO result = imageService.getImage(testId);
 
         ImageDTO testImageDTO = imageService.getImage(0L);
-        assertEquals(199, testImageDTO.getBody().length);
+        assertEquals(getDebugJpgData().length, testImageDTO.getBody().length);
     }
 
     private byte[] getDebugJpgData(){
