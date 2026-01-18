@@ -1,10 +1,7 @@
 package ru.ugaforever.blog.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.ugaforever.blog.dto.CommentDTO;
 import ru.ugaforever.blog.service.CommentService;
 
@@ -24,9 +21,9 @@ public class CommentController {
      *
      * @param id идентификатор поста
      * @return JSON [{"id":1,"text":"Комментарий к посту 1","postId":1},{"id":2,"text":"Ещё один комментарий к посту 1","postId":1}]
-     * @apiNote GET: /api/posts/{id}/comments
+     * @apiNote POST: /api/posts/{id}/comments
      */
-    @GetMapping
+    @PostMapping
     public ResponseEntity<List<CommentDTO>> getAllComments(@PathVariable("id") Long id) {
 
         return ResponseEntity.ok(commentService.getAllCommentsById(id)); // HTTP 200

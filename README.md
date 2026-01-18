@@ -72,3 +72,6 @@ sudo -u tomcat cp ./target/my-blog-back-app.war /opt/tomcat/webapps/ROOT.war
 ```
 
 ##  TODO
+- Нормализовать БД согласно схемы schema_future.sql
+- Попробовать JPA Entity
+- Пофиксить баг frontend'a (GET http://localhost:8080/api/posts/undefined/comments)

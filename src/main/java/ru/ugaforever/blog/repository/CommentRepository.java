@@ -27,20 +27,25 @@ public class CommentRepository {
     public List<Comment> findAll(Long id) {
 
         String sql = "SELECT comments FROM posts WHERE id = ?";
-        String comments = jdbcTemplate.queryForObject(
-                sql,
-                String.class,
-                id
-        );
+        try {
+            String comments = jdbcTemplate.queryForObject(
+                    sql,
+                    String.class,
+                    id
+            );
 
-        List<String> texts = parseComments(comments);
-        return IntStream.range(0, texts.size())
-                .mapToObj(i -> new Comment(
-                        (long) (i + 1),
-                        texts.get(i),
-                        id
-                ))
-                .collect(Collectors.toList());
+            List<String> texts = parseComments(comments);
+            return IntStream.range(0, texts.size())
+                    .mapToObj(i -> new Comment(
+                            (long) (i + 1),
+                            texts.get(i),
+                            id
+                    ))
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
 
     private List<String> parseComments(String jsonComments){
