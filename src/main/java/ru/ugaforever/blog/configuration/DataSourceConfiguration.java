@@ -45,7 +45,8 @@ public class DataSourceConfiguration {
         DataSource dataSource = event.getApplicationContext().getBean(DataSource.class);
 
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("schema.sql")); // Файл должен находиться в ресурсах
+        populator.addScript(new ClassPathResource("schema.sql")); // схема
+        populator.addScript(new ClassPathResource("data.sql")); // наполнение
         populator.execute(dataSource);
     }
 

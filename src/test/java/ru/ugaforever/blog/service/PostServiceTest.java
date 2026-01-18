@@ -1,13 +1,10 @@
 package ru.ugaforever.blog.service;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.ugaforever.blog.dto.ImageDTO;
 import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.PostRepository;
@@ -18,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
+@ContextConfiguration(classes = TestUnitConfig.class)
 class PostServiceTest {
 
     @Autowired

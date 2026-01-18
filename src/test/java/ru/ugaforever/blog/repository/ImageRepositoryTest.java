@@ -1,23 +1,18 @@
 package ru.ugaforever.blog.repository;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ru.ugaforever.blog.configuration.DataSourceConfiguration;
-import ru.ugaforever.blog.dto.ImageDTO;
 import ru.ugaforever.blog.model.Image;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig(classes = {DataSourceConfiguration.class, ImageRepository.class})
-@TestPropertySource(locations = "classpath:test-application.properties")
+@TestPropertySource(locations = "classpath:application-test.properties")
 class ImageRepositoryTest {
 
     @Autowired

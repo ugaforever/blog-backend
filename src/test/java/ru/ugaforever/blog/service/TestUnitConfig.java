@@ -11,7 +11,7 @@ import ru.ugaforever.blog.repository.PostRepository;
 
 @Configuration
 @ComponentScan("ru.ugaforever.blog.service")
-public class TestConfig {
+public class TestUnitConfig {
 
     @Bean
     @Primary
