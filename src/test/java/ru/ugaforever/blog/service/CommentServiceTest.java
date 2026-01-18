@@ -12,8 +12,8 @@ import ru.ugaforever.blog.repository.CommentRepository;
 @ContextConfiguration(classes = TestIntegrationConfig.class)
 class CommentServiceTest {
 
-    @Autowired
-    private CommentRepository commentRepository;
+    //@Autowired
+    //private CommentRepository commentRepository;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
