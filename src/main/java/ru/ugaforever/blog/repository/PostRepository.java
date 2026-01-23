@@ -35,10 +35,7 @@ public class PostRepository {
                         posts.text,
                         posts.like_count,
                         (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) as comment_count,
-                        CASE
-                            WHEN COUNT(tags.tag) = 0 THEN '{}'
-                            ELSE ARRAY_AGG(DISTINCT tags.tag)
-                        END as tags
+                        (SELECT STRING_AGG(DISTINCT tags.tag, ',') FROM tags WHERE tags.post_id = posts.id) as tags
                 FROM posts
                 LEFT JOIN tags ON tags.post_id = posts.id
                 WHERE 1=1 

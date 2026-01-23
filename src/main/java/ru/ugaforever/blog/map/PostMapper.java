@@ -6,7 +6,11 @@ import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.model.Post;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PostMapper {
@@ -46,8 +50,19 @@ public class PostMapper {
             .id(rs.getLong("id"))
             .title(rs.getString("title"))
             .text(rs.getString("text"))
-            .tags(Collections.singletonList(rs.getString("tags")))
+            .tags(parseTagsFromString(rs.getString("tags")))
             .likesCount(rs.getInt("like_count"))
             .commentsCount(rs.getInt("comment_count"))
             .build();
+
+    private List<String> parseTagsFromString(String tagsString) {
+        if (tagsString == null || tagsString.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.stream(tagsString.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+    }
 }

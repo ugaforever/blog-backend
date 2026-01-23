@@ -18,7 +18,7 @@ INSERT INTO posts (title, text, like_count) VALUES
 ('13 post 60', 'Контекст AnnotationConfigApplicationContext.', 15),
 ('14 post 61', 'Внедрение значений (@Value).', 10),
 ('15 post 62', 'Скоупы бинов в Spring.', 15),
-('16 post 63', '.', 13),
+('16 post 63', 'Тесты.', 13),
 ('17 post 77', 'Типы контейнеров в Spring.', 11),
 ('18 post 76', 'Внедрение зависимостей.', 51),
 ('19 post 54', 'События контейнера и листенеры.', 45),
