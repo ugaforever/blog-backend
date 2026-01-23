@@ -2,14 +2,14 @@ package ru.ugaforever.blog.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ugaforever.blog.dto.PageResponseDTO;
 import ru.ugaforever.blog.dto.PostDTO;
-import ru.ugaforever.blog.dto.PostListDTO;
+import ru.ugaforever.blog.dto.SearchRequestDTO;
 import ru.ugaforever.blog.service.PostService;
 
 //не должно быть зависимостей, нарушение архитектуры
 //import ru.ugaforever.model.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -27,21 +27,30 @@ public class PostController {
      * @param pageNumber номер текущей страницы
      * @param pageSize   число постов на странице (все поля обязательные)
      * @return JSON {"posts":[{"id":1,"title":"Название поста 1","text":"Текст поста в формате Markdown...","tags":["tag_1","tag_2"],"likesCount":5,"commentsCount":1},{"id":2,"title":"Название поста 2","text":"Текст поста в формате Markdown...","tags":[],"likesCount":1,"commentsCount":5}],"hasPrev":true,"hasNext":false,"lastPage":3}
-     * @apiNote GET: /api/posts?search=Lalala&pageNumber=1&pageSize=5
+     * @apiNote GET: http://localhost:8080/api/posts?search=post&pageNumber=0&pageSize=5
      */
     @GetMapping("/posts")
-    public PostListDTO getPosts(@RequestParam("search") String search,
-                                @RequestParam("pageNumber") int pageNumber,
-                                @RequestParam("pageSize") int pageSize) {
-        PostListDTO listDTO =  new PostListDTO();
+    public ResponseEntity<PageResponseDTO<PostDTO>> getPosts(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "pageNumber", defaultValue = "0") int pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5") int pageSize) {
 
-        //TODO create findAllbySearch()
-        listDTO.setPosts(postService.findAll());
-        listDTO.setHasNext(false);
-        listDTO.setHasPrev(false);
-        listDTO.setLastPage(1);
+        // Создаем DTO запроса
+        SearchRequestDTO request = new SearchRequestDTO().builder()
+                .search(search)
+                .pageNumber(pageNumber)
+                .pageSize(pageSize)
+                .build();
 
-        return ResponseEntity.ok(listDTO).getBody(); // HTTP 200
+        //лимит размера 1 страницы
+        if (request.getPageSize() > 10) {
+            request.setPageSize(10);
+        }
+
+        // Получаем результат
+        PageResponseDTO<PostDTO> response = postService.searchPosts(request);
+
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -51,7 +60,7 @@ public class PostController {
      * @return JSON {"id":1,"title":"Название поста 1","text":"Текст поста в формате Markdown...","tags":["tag_1","tag_2"],"likesCount":5,"commentsCount":1}
      * @apiNote GET: /api/posts/{id}
      */
-    @GetMapping("/posts/{id}")
+    /*@GetMapping("/posts/{id}")
     public ResponseEntity<PostDTO> getPost(@PathVariable("id") Long id) {
         PostDTO post = postService.getPostById(id);
 
@@ -60,7 +69,7 @@ public class PostController {
         }
 
         return ResponseEntity.ok(post); // HTTP 200
-    }
+    }*/
 
     /**
      * Удалить пост
@@ -69,11 +78,11 @@ public class PostController {
      * @return 200 Ok
      * @apiNote DELETE: /api/posts/{id}
      */
-    @DeleteMapping("/posts/{id}")
+    /*@DeleteMapping("/posts/{id}")
     public ResponseEntity deletePost(@PathVariable(name = "id") Long id) {
         postService.deleteById(id);
         return ResponseEntity.ok().build();
-    }
+    }*/
 
     /**
      * Инкремент числа лайков поста
@@ -82,13 +91,13 @@ public class PostController {
      * @return 200 Ok, обновлённое число лайков поста (число в теле ответа)
      * @apiNote POST: /api/posts/{id}/likes
      */
-    @PostMapping("/posts/{id}/likes")
+    /*@PostMapping("/posts/{id}/likes")
     public ResponseEntity<Integer> incrementLikes(@PathVariable(name = "id") Long id) {
         int likesCount = postService.addLikeAndGetCount(id);
 
         // Возвращаем новое количество лайков
         return ResponseEntity.ok(likesCount);
-    }
+    }*/
 
         /*
       Создать новый пост

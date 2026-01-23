@@ -65,6 +65,13 @@
 
 ##  Сборка
 ```
+Frontend
+docker compose down
+docker rmi my-blog-front-app-my-blog-front-app:latest //if need rebuild
+docker compose up -d
+docker ps
+
+Backend
 mvn clean package
 sudo rm -f /opt/tomcat/webapps/ROOT.war
 sudo -u tomcat cp ./target/my-blog-back-app.war /opt/tomcat/webapps/ROOT.war

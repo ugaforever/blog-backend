@@ -23,11 +23,11 @@ public class CommentController {
      * @return JSON [{"id":1,"text":"Комментарий к посту 1","postId":1},{"id":2,"text":"Ещё один комментарий к посту 1","postId":1}]
      * @apiNote POST: /api/posts/{id}/comments
      */
-    @PostMapping
-    public ResponseEntity<List<CommentDTO>> getAllComments(@PathVariable("id") Long id) {
+    //@PostMapping
+/*    public ResponseEntity<List<CommentDTO>> getAllComments(@PathVariable("id") Long id) {
 
         return ResponseEntity.ok(commentService.getAllCommentsById(id)); // HTTP 200
-    }
+    }*/
 
     /**
      * Получить комментарий поста
@@ -37,7 +37,7 @@ public class CommentController {
      * @return JSON {"id":2,"text":"Ещё один комментарий к посту 1","postId":1}
      * @apiNote GET: /api/posts/{id}/comments/{commentId}
      */
-    @GetMapping("/{commentId}")
+/*    @GetMapping("/{commentId}")
     public ResponseEntity<CommentDTO> getComment(@PathVariable("id") Long id,
                                                  @PathVariable("commentId") Long commentId) {
 
@@ -49,6 +49,6 @@ public class CommentController {
         }
 
         return ResponseEntity.notFound().build();
-    }
+    }*/
 
 }

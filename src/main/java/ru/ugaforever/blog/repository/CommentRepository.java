@@ -17,14 +17,14 @@ import java.util.stream.IntStream;
 @Repository
 public class CommentRepository {
     private final JdbcTemplate jdbcTemplate;
-    private final ObjectMapper objectMapper;
+    //private final ObjectMapper objectMapper;
 
-    public CommentRepository(JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
+    public CommentRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.objectMapper = objectMapper;
+
     }
 
-    public List<Comment> findAll(Long id) {
+    /*public List<Comment> findAll(Long id) {
 
         String sql = "SELECT comments FROM posts WHERE id = ?";
         try {
@@ -46,9 +46,9 @@ public class CommentRepository {
         } catch (Exception e) {
             return Collections.emptyList();
         }
-    }
+    }*/
 
-    private List<String> parseComments(String jsonComments){
+/*    private List<String> parseComments(String jsonComments){
         try {
             return objectMapper.readValue(
                     jsonComments.trim(),
@@ -57,5 +57,5 @@ public class CommentRepository {
             //TODO обработать некорректный JSON
             return Collections.emptyList();
         }
-    }
+    }*/
 }

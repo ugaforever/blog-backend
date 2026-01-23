@@ -3,8 +3,7 @@ CREATE TABLE IF NOT EXISTS posts (
     title VARCHAR(200) NOT NULL UNIQUE,
     text TEXT NOT NULL,
     image BLOB,
-    like_count INT NOT NULL DEFAULT 0,
-    comment_count INT NOT NULL DEFAULT 0
+    like_count INT NOT NULL DEFAULT 0
     );
 
 CREATE TABLE IF NOT EXISTS tags (

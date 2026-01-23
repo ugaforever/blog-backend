@@ -1,82 +1,115 @@
 package ru.ugaforever.blog.repository;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import ru.ugaforever.blog.map.PostMapper;
 import ru.ugaforever.blog.model.Post;
 
 //не должно быть зависимостей, нарушение архитектуры
 //import ru.ugaforever.dto.*;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class PostRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final ObjectMapper objectMapper;
+    private final PostMapper postMapper;
 
-    public PostRepository(JdbcTemplate jdbcTemplate, ObjectMapper objectMapper) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.objectMapper = objectMapper;
-    }
+    public List<Post> search(String search,
+                             String sortBy,
+                             String sortDirection,
+                             int offset,
+                             int limit) {
 
-    private final RowMapper<Post> postRowMapper = (rs, rowNum) -> {
-        Post post = new Post();
-        post.setId(rs.getLong("id"));
-        post.setTitle(rs.getString("title"));
-        post.setText(rs.getString("text"));
-        // Парсинг тегов
-        String tagsJson = rs.getString("tags");
-        post.setTags(parseTags(tagsJson));
-        // Подсчет комментариев
-        String commentsJson = rs.getString("comments");
-        post.setCommentsCount(countElements(commentsJson));
+        StringBuilder sql = new StringBuilder(
+                """
+                SELECT
+                        posts.id,
+                        posts.title as title,
+                        posts.text,
+                        posts.like_count,
+                        (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) as comment_count,
+                        CASE
+                            WHEN COUNT(tags.tag) = 0 THEN '{}'
+                            ELSE ARRAY_AGG(DISTINCT tags.tag)
+                        END as tags
+                FROM posts
+                LEFT JOIN tags ON tags.post_id = posts.id
+                WHERE 1=1 
+                """
+        );
 
-        post.setLikesCount(rs.getInt("like_count"));
-        
-        return post;
-    };
+        List<Object> params = new ArrayList<>();
 
-    private List<String> parseTags(String jsonTags) {
-        try {
-            return objectMapper.readValue(
-                    jsonTags.trim(),
-                    new TypeReference<List<String>>() {
-                    });
-        } catch (Exception e) {
-            //TODO обработать некорректный JSON
-            return Collections.emptyList();
+        //TODO добавить поиск по тэгам
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(" AND (LOWER(title) LIKE LOWER(?))");
+            String searchPattern = "%" + search + "%";
+            params.add(searchPattern);
         }
+
+        // Добавляем группировку
+        sql.append(" GROUP BY posts.id ");
+
+        // Добавляем сортировку
+        sql.append(" ORDER BY ")
+                .append(validateSortField(sortBy))
+                .append(" ")
+                .append("DESC".equalsIgnoreCase(sortDirection) ? "DESC" : "ASC");
+
+        // Добавляем пагинацию
+        sql.append(" LIMIT ?");
+        params.add(limit);
+        sql.append(" OFFSET ?");
+        params.add(offset);
+
+        return jdbcTemplate.query(sql.toString(), params.toArray(), postMapper.rowMapper); //через объект postMapper
     }
 
-    private int countElements(String jsonArray) {
-        try {
-            JsonNode node = objectMapper.readTree(jsonArray);
-            return node.isArray() ? node.size() : 0;
-        } catch (Exception e) {
-            //TODO обработать некорректный JSON
-            return -1;
+    public long countSearch(String search) {
+
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) FROM posts WHERE 1=1"
+        );
+        List<Object> params = new ArrayList<>();
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(" AND (LOWER(title) LIKE LOWER(?))");
+            String searchPattern = "%" + search + "%";
+            params.add(searchPattern);
         }
+
+        return jdbcTemplate.queryForObject(sql.toString(), Long.class, params.toArray());
     }
 
-    public List<Post> findAll() {
+    // Методы findAll и countAll (аналогично, но без поиска по тексту)
+
+    private String validateSortField(String field) {
+        // Белый список полей для сортировки
+        if(field == null) return "title";
+
+        List<String> allowedFields = List.of("id", "title", "text");
+        return allowedFields.contains(field) ? field : "title";
+    }
+
+    public List<Post> findAll(Pageable pageable) {
         String sql = "SELECT * FROM posts ORDER BY id";
 
         // query() всегда возвращает List (может быть пустым)
-        return jdbcTemplate.query(sql, postRowMapper);
+        return jdbcTemplate.query(sql, postMapper.rowMapper);
     }
 
     public Optional<Post> findById(Long id) {
         String sql = "SELECT * FROM posts WHERE id = ?";
 
         // Используем query() с Optional
-        List<Post> posts = jdbcTemplate.query(sql, postRowMapper, id);
+        List<Post> posts = jdbcTemplate.query(sql, postMapper.rowMapper, id);
 
         // Берём первый элемент если есть
         return posts.isEmpty() ? Optional.empty() : Optional.of(posts.getFirst());
@@ -94,6 +127,8 @@ public class PostRepository {
         String selectSql = "SELECT like_count FROM posts WHERE id = ?";
         return jdbcTemplate.queryForObject(selectSql, Integer.class, id);
     }
+
+
 }
 
 

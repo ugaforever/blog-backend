@@ -3,6 +3,7 @@ package ru.ugaforever.blog;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -20,5 +21,4 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost")
                 .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
-
 }
