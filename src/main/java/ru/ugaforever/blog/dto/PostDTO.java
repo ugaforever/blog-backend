@@ -1,14 +1,15 @@
 package ru.ugaforever.blog.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Setter
-@JsonInclude(JsonInclude.Include.NON_NULL)
+
+@Data                   // Генерирует геттеры, сеттеры, equals, hashCode, toString
+@Builder                // Генерирует builder
+@NoArgsConstructor      // Конструктор без параметров (требуется для JPA/Jackson)
+@AllArgsConstructor     // Конструктор со ВСЕМИ параметрами (требуется для @Builder)
 public class PostDTO {
     private Long id;
     private String title;

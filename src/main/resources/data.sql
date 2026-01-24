@@ -1,6 +1,6 @@
-DELETE FROM posts;
 DELETE FROM tags;
 DELETE FROM comments;
+DELETE FROM posts;
 
 INSERT INTO posts (title, text, like_count) VALUES
 ('1 post 11', 'Это содержимое первого поста о программировании на Java и Spring Boot.', 5),

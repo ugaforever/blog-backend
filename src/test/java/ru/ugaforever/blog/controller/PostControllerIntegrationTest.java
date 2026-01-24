@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 import ru.ugaforever.blog.configuration.TestControllerConfig;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)  //подключение Spring TestContext Framework для совместимости с JUnit
 @ContextConfiguration(classes = TestControllerConfig.class)
 @WebAppConfiguration                //тест веб-контекста
-class PostControllerTest {
+class PostControllerIntegrationTest {
 
     @Autowired
     private PostController postController;
