@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.ugaforever.blog.map.PostMapper;
+import ru.ugaforever.blog.mapper.PostMapper;
 import ru.ugaforever.blog.model.Post;
 
 //не должно быть зависимостей, нарушение архитектуры
@@ -66,7 +66,7 @@ public class PostRepository {
         sql.append(" OFFSET ?");
         params.add(offset);
 
-        return jdbcTemplate.query(sql.toString(), params.toArray(), postMapper.rowMapper); //через объект postMapper
+        return jdbcTemplate.query(sql.toString(), params.toArray(), postMapper); //через объект postMapper
     }
 
     public long countSearch(String search) {
@@ -99,14 +99,14 @@ public class PostRepository {
         String sql = "SELECT * FROM posts ORDER BY id";
 
         // query() всегда возвращает List (может быть пустым)
-        return jdbcTemplate.query(sql, postMapper.rowMapper);
+        return jdbcTemplate.query(sql, postMapper);
     }
 
     public Optional<Post> findById(Long id) {
         String sql = "SELECT * FROM posts WHERE id = ?";
 
         // Используем query() с Optional
-        List<Post> posts = jdbcTemplate.query(sql, postMapper.rowMapper, id);
+        List<Post> posts = jdbcTemplate.query(sql, postMapper, id);
 
         // Берём первый элемент если есть
         return posts.isEmpty() ? Optional.empty() : Optional.of(posts.getFirst());

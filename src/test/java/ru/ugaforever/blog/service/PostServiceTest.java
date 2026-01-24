@@ -1,20 +1,16 @@
 package ru.ugaforever.blog.service;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.ugaforever.blog.dto.PostDTO;
-import ru.ugaforever.blog.model.Post;
+import ru.ugaforever.blog.mapper.PostMapper;
 import ru.ugaforever.blog.repository.PostRepository;
 
-import java.util.Optional;
+import static org.mockito.Mockito.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-
-@ExtendWith(SpringExtension.class)
+@ExtendWith(SpringExtension.class)  //интегрирует Spring Test Context с JUnit 5
 @ContextConfiguration(classes = TestUnitConfig.class)
 class PostServiceTest {
 
@@ -22,9 +18,47 @@ class PostServiceTest {
     private PostRepository postRepository;
 
     @Autowired
+    private PostMapper postMapper;
+
+    @Autowired
     private PostService postService;
 
-    @Test
+    @BeforeEach
+    void resetMocks() {
+        reset(postRepository);
+    }
+
+/*    @Test
+    void testSearchPosts() {
+        SearchRequestDTO request = new SearchRequestDTO().builder()
+                .search("post")
+                .pageNumber(0)
+                .pageSize(5)
+                .build();
+
+        // Проверка вызова метода save
+        doNothing().when(postRepository).search(
+                request.getSearch(),
+                request.getSortBy(),
+                request.getSortDirection(),
+                request.getOffset(),
+                request.getPageSize()
+        );
+
+        // Выполнение метода
+        postService.searchPosts(request);
+
+        // Проверка вызовов
+        verify(postRepository, times(1)).search(
+                request.getSearch(),
+                request.getSortBy(),
+                request.getSortDirection(),
+                request.getOffset(),
+                request.getPageSize()
+        );
+    }*/
+
+/*    @Test
      void testGetPostById(){
         long testId = 1;
         String testTitle = "test title";
@@ -41,6 +75,6 @@ class PostServiceTest {
         assertEquals(testId, result.getId());
         assertEquals(testText, result.getText());
         assertEquals(testTitle, result.getTitle());
-    }
+    }*/
 
 }

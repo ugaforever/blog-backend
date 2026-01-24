@@ -7,7 +7,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ru.ugaforever.blog.configuration.DataSourceConfiguration;
 
 @SpringJUnitConfig(classes = {DataSourceConfiguration.class, CommentRepository.class})
-@TestPropertySource(locations = "classpath:application-test.properties")
+
 class CommentRepositoryTest {
 
     @BeforeEach

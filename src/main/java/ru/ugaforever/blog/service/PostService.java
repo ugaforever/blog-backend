@@ -4,12 +4,11 @@ import org.springframework.stereotype.Service;
 import ru.ugaforever.blog.dto.PageResponseDTO;
 import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.dto.SearchRequestDTO;
-import ru.ugaforever.blog.map.PostMapper;
+import ru.ugaforever.blog.mapper.PostMapper;
 import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.PostRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,17 +19,6 @@ public class PostService {
     public PostService(PostRepository postRepository, PostMapper postMapper) {
         this.postRepository = postRepository;
         this.postMapper = postMapper;
-    }
-
-    private PostDTO convertModelToDTO(Post post) {
-        PostDTO dto = new PostDTO();
-        dto.setId(post.getId());
-        dto.setTitle(post.getTitle());
-        dto.setText(post.getText());
-        //dto.setTags(post.getTags());
-        dto.setLikesCount(post.getLikesCount());
-        dto.setCommentsCount(post.getCommentsCount());
-        return dto;
     }
 
     // Model → DTO

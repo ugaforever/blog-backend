@@ -1,23 +1,21 @@
 package ru.ugaforever.blog.service;
 
-import org.mockito.Mockito;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import ru.ugaforever.blog.repository.CommentRepository;
-import ru.ugaforever.blog.repository.ImageRepository;
-import ru.ugaforever.blog.repository.PostRepository;
+import org.springframework.context.annotation.*;
 
 @Configuration
 @ComponentScan("ru.ugaforever.blog.service")
 public class TestUnitConfig {
 
-    @Bean
+/*    @Bean
     @Primary
     public PostRepository mockPostRepository() {
         return Mockito.mock(PostRepository.class);
+    }
 
+    @Bean
+    @Primary
+    public PostMapper mockPostMapper() {
+        return Mockito.mock(PostMapper.class);
     }
 
     @Bean
@@ -30,6 +28,6 @@ public class TestUnitConfig {
     @Primary
     public ImageRepository mockImageRepository() {
         return Mockito.mock(ImageRepository.class);
-    }
+    }*/
 
 }

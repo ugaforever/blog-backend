@@ -1,4 +1,4 @@
-package ru.ugaforever.blog.map;
+package ru.ugaforever.blog.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,30 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class PostMapper {
+public class PostMapper implements RowMapper<Post> {
+
+    @Override
+    public Post mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return Post.builder()
+                .id(rs.getLong("id"))
+                .title(rs.getString("title"))
+                .text(rs.getString("text"))
+                .tags(parseTagsFromString(rs.getString("tags")))
+                .likesCount(rs.getInt("like_count"))
+                .commentsCount(rs.getInt("comment_count"))
+                .build();
+    }
+
+    private List<String> parseTagsFromString(String tagsString) {
+        if (tagsString == null || tagsString.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.stream(tagsString.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+    }
 
     public PostDTO toDTO(Post post) {
         if (post == null) {
@@ -46,23 +69,14 @@ public class PostMapper {
                 .build();
     }
 
-    public RowMapper<Post> rowMapper = (rs, rowNum) -> Post.builder()
+/*    public RowMapper<Post> rowMapper = (rs, rowNum) -> Post.builder()
             .id(rs.getLong("id"))
             .title(rs.getString("title"))
             .text(rs.getString("text"))
             .tags(parseTagsFromString(rs.getString("tags")))
             .likesCount(rs.getInt("like_count"))
             .commentsCount(rs.getInt("comment_count"))
-            .build();
+            .build();*/
 
-    private List<String> parseTagsFromString(String tagsString) {
-        if (tagsString == null || tagsString.isEmpty()) {
-            return Collections.emptyList();
-        }
 
-        return Arrays.stream(tagsString.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toList());
-    }
 }

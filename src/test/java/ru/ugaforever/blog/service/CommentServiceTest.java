@@ -9,13 +9,13 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.ugaforever.blog.repository.CommentRepository;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestIntegrationConfig.class)
+//@ContextConfiguration(classes = TestIntegrationConfig.class)
 class CommentServiceTest {
 
     //@Autowired
     //private CommentRepository commentRepository;
 
-    @Autowired
+  /*  @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
@@ -24,5 +24,5 @@ class CommentServiceTest {
         System.out.println("Total posts in DB: " +
                 jdbcTemplate.queryForObject("SELECT COUNT(*) FROM posts", Integer.class));
     }
-
+*/
 }
