@@ -12,6 +12,7 @@ import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.PostRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -77,5 +78,33 @@ public class PostRepositoryUTest {
                 any(String.class),
                 any(Object[].class),
                 any(RowMapper.class));
+    }
+
+    @Test
+    void testFindById_ShouldReturnPost(){
+        // Arrange
+        Post expectedPost = Post.builder().id(1L).title("Post 1").text("Text 1").likesCount(1).build();
+
+        doReturn(List.of(expectedPost)).when(jdbcTemplate).query(
+                any(String.class),
+                any(Object[].class),
+                any(RowMapper.class)
+        );
+
+        // Act
+        Optional<Post> result = postRepository.findById(1L);
+
+
+        // Assert
+        assertThat(result).isNotNull();
+
+        // Assert
+        assertThat(result)
+                .isPresent() // Проверяем что Optional не пустой
+                .hasValueSatisfying(post -> {
+                    assertThat(post.getId()).isEqualTo(1L);
+                    assertThat(post.getTitle()).isEqualTo("Post 1");
+                    assertThat(post.getText()).isEqualTo("Text 1");
+                });
     }
 }
