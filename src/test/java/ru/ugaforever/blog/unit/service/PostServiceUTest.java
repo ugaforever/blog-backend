@@ -14,6 +14,7 @@ import ru.ugaforever.blog.repository.PostRepository;
 import ru.ugaforever.blog.service.PostService;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
@@ -92,4 +93,41 @@ public class PostServiceUTest {
         assertThat(result.isHasPrev()).isEqualTo(false);
         assertThat(result.isHasNext()).isEqualTo(true);
     }
+
+    @Test
+    void testGetPostById_ShouldReturnPostDTO(){
+        // Arrange
+        // Подготовка поста, который вернет репозиторий
+        Post mockPost = Post.builder()
+                .id(1L).title("Post 1").text("Text 1").likesCount(1).commentsCount(1).build();
+
+        // Подготовка DTO, которые должен вернуть маппер
+        PostDTO mockPostDTO = PostDTO.builder()
+                .id(1L).title("Post 1").text("Text 1").likesCount(1).commentsCount(1).build();
+
+        doReturn(Optional.of(mockPost)).when(postRepository).findById(anyLong());
+        doReturn(mockPostDTO).when(postMapper).toDTO(mockPost);
+
+        // Act
+        PostDTO result = postService.getPostById(1L);
+
+
+        // Assert
+        assertThat(result).isNotNull();
+        System.out.println(result);
+
+
+
+    }
 }
+
+/*
+public PostDTO getPostById(Long id) {
+    Optional<Post> postOpt = postRepository.findById(id);
+    if (postOpt.isEmpty()) {
+        //TODO сейчас HTTP 500
+        throw new RuntimeException("Post not found with id: " + id);
+    }
+
+    return postMapper.toDTO(postOpt.get());
+}*/
