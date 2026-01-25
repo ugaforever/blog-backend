@@ -11,6 +11,7 @@ import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.PostRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,7 +40,7 @@ public class PostRepositoryITest {
 
 
     @Test
-    void save_ShouldPersistPost() {
+    void testSearch_ShouldReturnPost() {
         // Arrange no
 
         // Act
@@ -59,5 +60,24 @@ public class PostRepositoryITest {
                 .hasFieldOrPropertyWithValue("title", "9 post 41")
                 .hasFieldOrPropertyWithValue("text", "BeanPostProcessor — возможность динамического изменения бинов.")
                 .hasFieldOrPropertyWithValue("likesCount", 51);
+    }
+
+    @Test
+    void testFindById(){
+        // Act
+        Optional<Post> result = postRepository.findById(1L);
+
+        // Assert
+        assertThat(result).isNotNull();
+        assertThat(result)
+                .isPresent() // Проверяем что Optional не пустой
+                .hasValueSatisfying(post -> {
+                    System.out.println(post);
+                    assertThat(post.getId()).isEqualTo(1L);
+                    assertThat(post.getTitle()).isEqualTo("1 post 11");
+                    assertThat(post.getText()).isEqualTo("Это содержимое первого поста о программировании на Java и Spring Boot.");
+                    assertThat(post.getLikesCount()).isEqualTo(5);
+                    assertThat(post.getCommentsCount()).isEqualTo(2);
+                });
     }
 }

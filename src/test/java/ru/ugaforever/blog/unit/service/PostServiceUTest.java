@@ -111,23 +111,14 @@ public class PostServiceUTest {
         // Act
         PostDTO result = postService.getPostById(1L);
 
-
         // Assert
         assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getTitle()).isEqualTo("Post 1");
+        assertThat(result.getText()).isEqualTo("Text 1");
+        assertThat(result.getLikesCount()).isEqualTo(1);
+        assertThat(result.getCommentsCount()).isEqualTo(1);
+
         System.out.println(result);
-
-
-
     }
 }
-
-/*
-public PostDTO getPostById(Long id) {
-    Optional<Post> postOpt = postRepository.findById(id);
-    if (postOpt.isEmpty()) {
-        //TODO сейчас HTTP 500
-        throw new RuntimeException("Post not found with id: " + id);
-    }
-
-    return postMapper.toDTO(postOpt.get());
-}*/
