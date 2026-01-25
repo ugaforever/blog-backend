@@ -5,11 +5,11 @@ import lombok.*;
 
 import java.util.List;
 
-
-@Data                   // Генерирует геттеры, сеттеры, equals, hashCode, toString
-@Builder                // Генерирует builder
-@NoArgsConstructor      // Конструктор без параметров (требуется для JPA/Jackson)
-@AllArgsConstructor     // Конструктор со ВСЕМИ параметрами (требуется для @Builder)
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostDTO {
     private Long id;
     private String title;

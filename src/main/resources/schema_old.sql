@@ -1,9 +1,0 @@
-CREATE TABLE IF NOT EXISTS posts (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(200) NOT NULL UNIQUE,
-    text VARCHAR NOT NULL,
-    --image BLOB,
-    tags VARCHAR NOT NULL DEFAULT '[]',
-    comments VARCHAR NOT NULL DEFAULT '[]',
-    like_count INT NOT NULL DEFAULT 0
-    );

@@ -1,4 +1,4 @@
-package ru.ugaforever.blog.service;
+package ru.ugaforever.blog.unit.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,6 +11,7 @@ import ru.ugaforever.blog.dto.SearchRequestDTO;
 import ru.ugaforever.blog.mapper.PostMapper;
 import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.PostRepository;
+import ru.ugaforever.blog.service.PostService;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.when;
  */
 
 @ExtendWith(MockitoExtension.class)
-public class PostServiceUnitTest {
+public class PostServiceUTest {
 
     @Mock
     private PostRepository postRepository;

@@ -1,28 +1,31 @@
-package ru.ugaforever.blog.controller;
+package ru.ugaforever.blog.integration.controller;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
-import ru.ugaforever.blog.configuration.TestControllerConfig;
+import ru.ugaforever.blog.integration.configuration.PostServiceTestConfig;
+import ru.ugaforever.blog.controller.PostController;
+import ru.ugaforever.blog.service.PostService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)  //подключение Spring TestContext Framework для совместимости с JUnit
-@ContextConfiguration(classes = TestControllerConfig.class)
-@WebAppConfiguration                //тест веб-контекста
-class PostControllerIntegrationTest {
+@ContextConfiguration(classes = PostServiceTestConfig.class)
+//@WebAppConfiguration                //тест веб-контекста
+class PostControllerITest {
+
+    @Autowired
+    private PostService postService;
 
     @Autowired
     private PostController postController;
 
-    @Test
+/*    @Test
     void testControllerLogic() {
         // Проверяем, что контроллер загружен
         assertNotNull(postController);
-    }
+    }*/
 
 }

@@ -1,16 +1,15 @@
-package ru.ugaforever.blog.repository;
+package ru.ugaforever.blog.unit.repository;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import ru.ugaforever.blog.mapper.PostMapper;
 import ru.ugaforever.blog.model.Post;
+import ru.ugaforever.blog.repository.PostRepository;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ import static org.assertj.core.api.Assertions.tuple;
  */
 
 @ExtendWith(MockitoExtension.class)
-public class PostRepositoryUnitTest {
+public class PostRepositoryUTest {
 
     @Mock
     private JdbcTemplate jdbcTemplate;

@@ -6,7 +6,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 @Configuration
-public class RestConfiguration {
+public class RestConfig {
 
     @Bean
     public HttpMessageConverter<Object> httpMessageConverter() {

@@ -1,13 +1,14 @@
-package ru.ugaforever.blog.repository;
+package ru.ugaforever.blog.integration.repository;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.transaction.annotation.Transactional;
-import ru.ugaforever.blog.configuration.TestPersistenceConfig;
+import ru.ugaforever.blog.integration.configuration.PostRepositoryTestConfig;
+import ru.ugaforever.blog.mapper.PostMapper;
 import ru.ugaforever.blog.model.Post;
+import ru.ugaforever.blog.repository.PostRepository;
 
 import java.util.List;
 
@@ -18,15 +19,27 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Интеграционные тесты с реальной БД
  */
 
+
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestPersistenceConfig.class)
-public class PostRepositoryIntegrationTest {
+@ContextConfiguration(classes = PostRepositoryTestConfig.class)
+public class PostRepositoryITest {
 
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private PostMapper postMapper;
+
     @Test
-    void testSearch_ShouldReturnListPost() {
+    void testContextLoads() {
+        assertThat(postRepository).isNotNull();
+        assertThat(postMapper).isNotNull();
+        System.out.println("Context loaded successfully!");
+    }
+
+
+    @Test
+    void save_ShouldPersistPost() {
         // Arrange no
 
         // Act
