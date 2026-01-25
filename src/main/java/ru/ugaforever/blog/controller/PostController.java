@@ -60,16 +60,16 @@ public class PostController {
      * @return JSON {"id":1,"title":"Название поста 1","text":"Текст поста в формате Markdown...","tags":["tag_1","tag_2"],"likesCount":5,"commentsCount":1}
      * @apiNote GET: /api/posts/{id}
      */
-    /*@GetMapping("/posts/{id}")
+    @GetMapping("/posts/{id}")
     public ResponseEntity<PostDTO> getPost(@PathVariable("id") Long id) {
-        PostDTO post = postService.getPostById(id);
+        PostDTO postDTO = postService.getPostById(id);
 
-        if (post == null) {
+        if (postDTO == null) {
             return ResponseEntity.notFound().build(); // HTTP 404
         }
 
-        return ResponseEntity.ok(post); // HTTP 200
-    }*/
+        return ResponseEntity.ok(postDTO); // HTTP 200
+    }
 
     /**
      * Удалить пост

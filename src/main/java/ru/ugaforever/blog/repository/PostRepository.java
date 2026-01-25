@@ -101,18 +101,27 @@ public class PostRepository {
         return allowedFields.contains(field) ? field : "title";
     }
 
-    public List<Post> findAll(Pageable pageable) {
-        String sql = "SELECT * FROM posts ORDER BY id";
-
-        // query() всегда возвращает List (может быть пустым)
-        return jdbcTemplate.query(sql, postMapper);
-    }
-
     public Optional<Post> findById(Long id) {
-        String sql = "SELECT * FROM posts WHERE id = ?";
 
-        // Используем query() с Optional
-        List<Post> posts = jdbcTemplate.query(sql, postMapper, id);
+        StringBuilder sql = new StringBuilder(
+                """
+                SELECT
+                        posts.id,
+                        posts.title as title,
+                        posts.text,
+                        posts.like_count,
+                        (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) as comment_count,
+                        (SELECT STRING_AGG(DISTINCT tags.tag, ',') FROM tags WHERE tags.post_id = posts.id) as tags
+                FROM posts
+                LEFT JOIN tags ON tags.post_id = posts.id
+                WHERE posts.id = ? 
+                """
+        );
+
+        List<Object> params = new ArrayList<>();
+        params.add(id);
+
+        List<Post> posts = jdbcTemplate.query(sql.toString(), params.toArray(), postMapper); //через объект postMapper
 
         // Берём первый элемент если есть
         return posts.isEmpty() ? Optional.empty() : Optional.of(posts.getFirst());

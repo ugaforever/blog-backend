@@ -9,6 +9,7 @@ import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.PostRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,16 +30,15 @@ public class PostService {
     }*/
 
     // Model → DTO
-    /*public PostDTO getPostById(Long id) {
+    public PostDTO getPostById(Long id) {
         Optional<Post> postOpt = postRepository.findById(id);
         if (postOpt.isEmpty()) {
             //TODO сейчас HTTP 500
             throw new RuntimeException("Post not found with id: " + id);
         }
 
-        Post post = postOpt.get();
-        return convertModelToDTO(post);
-    }*/
+        return postMapper.toDTO(postOpt.get());
+    }
 
 
 
