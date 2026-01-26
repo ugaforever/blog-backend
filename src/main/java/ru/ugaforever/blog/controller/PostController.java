@@ -1,8 +1,11 @@
 package ru.ugaforever.blog.controller;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ugaforever.blog.dto.PageResponseDTO;
+import ru.ugaforever.blog.dto.PostCreateDTO;
 import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.dto.SearchRequestDTO;
 import ru.ugaforever.blog.service.PostService;
@@ -27,7 +30,7 @@ public class PostController {
      * @param pageNumber номер текущей страницы
      * @param pageSize   число постов на странице (все поля обязательные)
      * @return JSON {"posts":[{"id":1,"title":"Название поста 1","text":"Текст поста в формате Markdown...","tags":["tag_1","tag_2"],"likesCount":5,"commentsCount":1},{"id":2,"title":"Название поста 2","text":"Текст поста в формате Markdown...","tags":[],"likesCount":1,"commentsCount":5}],"hasPrev":true,"hasNext":false,"lastPage":3}
-     * @apiNote GET: http://localhost:8080/api/posts?search=post&pageNumber=0&pageSize=5
+     * @apiNote GET: /api/posts?search=post&pageNumber=0&pageSize=5
      */
     @GetMapping("/posts")
     public ResponseEntity<PageResponseDTO<PostDTO>> getPosts(
@@ -99,25 +102,21 @@ public class PostController {
         return ResponseEntity.ok(likesCount);
     }*/
 
-        /*
-      Создать новый пост
-
-      @param title название поста
-     * @param text  текст поста (в формате Markdown)
-     * @param tags  список тегов (все поля обязательные)
+    /**
+     * Создать новый пост
+     *
      * @return созданный пост в JSON ({"id":3,"title":"Название поста 3","text":"Текст поста в формате Markdown...","tags":["tag_1","tag_2"],"likesCount":0,"commentsCount":0})
      * @apiNote POST /api/posts ({"title":"Название поста 3","text":"Текст поста в формате Markdown...","tags":["tag_1","tag_2"]})
+     *
+     * curl -X POST http://localhost:8080/api/posts -H "Content-Type: application/json" -d '{"title":"new post 3","text": "Новый пост.","tags": ["tag_1", "tag_2"]}'
      */
-    /*@PostMapping("/api/posts")
-    public ResponseEntity<PostDTO> createPost(@RequestBody PostCreateDTO postDTO,
-                                              UriComponentsBuilder uriBuilder) {
-        PostDTO createdPost = postService.createPost(postDTO);
+    @PostMapping("/posts")
+    public ResponseEntity<PostDTO> createPost( @Valid @RequestBody PostCreateDTO request) {
 
-        URI location = uriBuilder
-                .path("/{id}")
-                .buildAndExpand(createdPost.getId())
-                .toUri();
+        PostDTO response = postService.createPost(request);
 
-        return ResponseEntity.created(location).body(createdPost);
-    }*/
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
+    }
 }

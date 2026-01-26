@@ -1,7 +1,9 @@
 package ru.ugaforever.blog.service;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import ru.ugaforever.blog.dto.PageResponseDTO;
+import ru.ugaforever.blog.dto.PostCreateDTO;
 import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.dto.SearchRequestDTO;
 import ru.ugaforever.blog.mapper.PostMapper;
@@ -81,6 +83,17 @@ public class PostService {
                 request.getPageSize(),
                 countElements
         );
+    }
+
+    public PostDTO createPost(@Valid PostCreateDTO request) {
+        Post newPost = postRepository.createAndReturnPost(
+                request.getTitle(),
+                request.getText(),
+                request.getTags()
+        );
+
+
+        return postMapper.toDTO(newPost);
     }
 }
 

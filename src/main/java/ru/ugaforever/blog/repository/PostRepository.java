@@ -1,9 +1,9 @@
 package ru.ugaforever.blog.repository;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.ugaforever.blog.mapper.PostMapper;
 import ru.ugaforever.blog.model.Post;
@@ -11,10 +11,13 @@ import ru.ugaforever.blog.model.Post;
 //не должно быть зависимостей, нарушение архитектуры
 //import ru.ugaforever.dto.*;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
 //@RequiredArgsConstructor
 public class PostRepository {
@@ -141,6 +144,38 @@ public class PostRepository {
     }
 
 
+    public Post createAndReturnPost(String title,
+                                    String text,
+                                    List<String> tags) {
+
+        String sql = "INSERT INTO posts (title, text) VALUES (?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, title);
+            ps.setString(2, text);
+            return ps;
+        }, keyHolder);
+
+        // Получаем сгенерированный ID
+        Long generatedId = keyHolder.getKey().longValue();
+
+        // Добавляем тэги
+        addTags(generatedId, tags);
+
+        // Получаем полную запись по ID
+        return findById(generatedId).get();
+    }
+
+    private void addTags(Long id, List<String> tags){
+        String sql = "INSERT INTO tags (post_id, tag) VALUES (?, ?)";
+
+        for (String tag : tags) {
+            jdbcTemplate.update(sql, id, tag);
+        }
+    }
 }
 
 

@@ -55,7 +55,7 @@ public class PostRepositoryITest {
         assertThat(result).hasSize(20);
 
         // Проверка конкретных полей первого элемента
-        assertThat(result.get(0))
+        assertThat(result.getFirst())
                 .hasFieldOrPropertyWithValue("id", 9L)
                 .hasFieldOrPropertyWithValue("title", "9 post 41")
                 .hasFieldOrPropertyWithValue("text", "BeanPostProcessor — возможность динамического изменения бинов.")
