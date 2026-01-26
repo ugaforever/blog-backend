@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.ugaforever.blog.dto.PageResponseDTO;
+import ru.ugaforever.blog.dto.PostCreateDTO;
 import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.dto.SearchRequestDTO;
 import ru.ugaforever.blog.integration.configuration.PostServiceTestConfig;
 import ru.ugaforever.blog.service.PostService;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
@@ -20,8 +23,6 @@ public class PostServiceITest {
 
     @Autowired
     private PostService postService;
-    /*@Autowired
-    private PostRepository postRepository;*/
 
     @Test
     void testContextLoads() {
@@ -44,8 +45,6 @@ public class PostServiceITest {
 
         // Assert
         assertThat(result).isNotNull();
-
-
         assertThat(result)
                 .hasFieldOrPropertyWithValue("hasPrev", false)
                 .hasFieldOrPropertyWithValue("hasNext", true);
@@ -54,8 +53,31 @@ public class PostServiceITest {
                 .extracting("posts")
                 .asInstanceOf(LIST)
                 .hasSize(5);
+    }
 
-        System.out.println(result);
+    @Test
+    void testCreatePost_ShouldReturnPostDTO(){
+        // Arrange
+        String expectedTitle ="New post title" + System.currentTimeMillis();
+        String expectedText = "New post text" + System.currentTimeMillis();
+        String expectedTag1 = "tag_1";
+        String expectedTag2 = "tag_2";
+
+        PostCreateDTO request = PostCreateDTO.builder()
+                .title(expectedTitle)
+                .text(expectedText)
+                .tags(List.of(expectedTag1, expectedTag2))
+                .build();
+
+        // Act
+        PostDTO result = postService.createPost(request);
+
+        // Assert
+        assertThat(result).isNotNull();
+        assertThat(result.getTitle()).isEqualTo(expectedTitle);
+        assertThat(result.getText()).isEqualTo(expectedText);
+        assertThat(result.getTags().get(0)).isEqualTo(expectedTag1);
+        assertThat(result.getTags().get(1)).isEqualTo(expectedTag2);
     }
 }
 

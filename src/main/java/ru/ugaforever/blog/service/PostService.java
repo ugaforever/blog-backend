@@ -92,7 +92,6 @@ public class PostService {
                 request.getTags()
         );
 
-
         return postMapper.toDTO(newPost);
     }
 }
