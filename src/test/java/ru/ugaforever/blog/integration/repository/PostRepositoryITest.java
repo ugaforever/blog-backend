@@ -123,4 +123,31 @@ public class PostRepositoryITest {
         assertThat(result.getTags().get(1)).isEqualTo(expectedTag2);
     }
 
+    @Test
+    void testEditAndReturnPost() {
+        // Arrange no
+        long expectedId = 1L;
+        String expectedTitle ="Edit post title" + System.currentTimeMillis();
+        String expectedText = "Edit post text" + System.currentTimeMillis();
+        String expectedTag1 = "tag_" + System.currentTimeMillis();
+        String expectedTag2 = "tag_" + System.currentTimeMillis();
+
+        // Act
+        Post result = postRepository.editAndReturnPost(
+                expectedId,
+                expectedTitle,
+                expectedText,
+                List.of(expectedTag1, expectedTag2)
+        );
+
+        // Assert
+        System.out.println(result);
+        assertThat(result).isNotNull();
+        assertThat(result.getTitle()).isEqualTo(expectedTitle);
+        assertThat(result.getText()).isEqualTo(expectedText);
+        assertThat(result.getTags()).contains(expectedTag1);
+        assertThat(result.getTags()).contains(expectedTag2);
+    }
+
+
 }

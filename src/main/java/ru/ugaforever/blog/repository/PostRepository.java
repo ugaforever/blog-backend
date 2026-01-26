@@ -1,5 +1,8 @@
 package ru.ugaforever.blog.repository;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -176,6 +179,29 @@ public class PostRepository {
             jdbcTemplate.update(sql, id, tag);
         }
     }
+
+    public Post editAndReturnPost(
+            Long id,
+            String title,
+            String text,
+            List<String> tags) {
+
+        // Получаем полную запись по ID
+        Optional<Post> post = findById(id);
+        if (post.isEmpty()){
+            return Post.builder().build();
+            //TODO почитать про какую-нибудь стройную обработку исключений
+        }
+
+        String sql = "UPDATE posts SET title = ?, text = ? WHERE id = ?";
+        jdbcTemplate.update(sql, title, text, id);
+
+        // Добавляем тэги
+        addTags(id, tags);
+
+        // Получаем полную запись по ID
+        return findById(id).get();
+    }
 }
 
 
@@ -184,15 +210,3 @@ public class PostRepository {
 
 
 
-    /*public Optional<PostDTO> createPost(Post post) {
-
-        String sql = "SELECT * FROM posts WHERE id = ?";
-
-        try {
-            PostDTO postDTO = jdbcTemplate.queryForObject(sql, postRowMapper, id);
-
-            return Optional.ofNullable(postDTO);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }*/

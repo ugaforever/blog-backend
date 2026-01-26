@@ -1,8 +1,6 @@
 package ru.ugaforever.blog.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +12,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostCreateDTO {
+public class PostEditDTO {
+
+    @NotNull(message = "ID не может быть пустым")
+    @Min(value = 1, message = "ID должен быть положительным числом")
+    private Long id;
 
     @NotBlank(message = "Название поста не может быть пустым")
     @Size(min = 1, max = 255, message = "Название поста должно быть от 1 до 255 символов")

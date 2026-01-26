@@ -2,10 +2,7 @@ package ru.ugaforever.blog.service;
 
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
-import ru.ugaforever.blog.dto.PageResponseDTO;
-import ru.ugaforever.blog.dto.PostCreateDTO;
-import ru.ugaforever.blog.dto.PostDTO;
-import ru.ugaforever.blog.dto.SearchRequestDTO;
+import ru.ugaforever.blog.dto.*;
 import ru.ugaforever.blog.mapper.PostMapper;
 import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.PostRepository;
@@ -93,6 +90,17 @@ public class PostService {
         );
 
         return postMapper.toDTO(newPost);
+    }
+
+    public PostDTO editPost(@Valid PostEditDTO request) {
+        Post editPost = postRepository.editAndReturnPost(
+                request.getId(),
+                request.getTitle(),
+                request.getText(),
+                request.getTags()
+        );
+
+        return postMapper.toDTO(editPost);
     }
 }
 

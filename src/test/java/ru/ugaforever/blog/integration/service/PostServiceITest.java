@@ -5,10 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.ugaforever.blog.dto.PageResponseDTO;
-import ru.ugaforever.blog.dto.PostCreateDTO;
-import ru.ugaforever.blog.dto.PostDTO;
-import ru.ugaforever.blog.dto.SearchRequestDTO;
+import ru.ugaforever.blog.dto.*;
 import ru.ugaforever.blog.integration.configuration.PostServiceTestConfig;
 import ru.ugaforever.blog.service.PostService;
 
@@ -78,6 +75,33 @@ public class PostServiceITest {
         assertThat(result.getText()).isEqualTo(expectedText);
         assertThat(result.getTags().get(0)).isEqualTo(expectedTag1);
         assertThat(result.getTags().get(1)).isEqualTo(expectedTag2);
+    }
+
+    @Test
+    void testEditPost_ShouldReturnPostDTO(){
+        // Arrange
+        long expectedId = 1L;
+        String expectedTitle ="Edit post title" + System.currentTimeMillis();
+        String expectedText = "Edit post text" + System.currentTimeMillis();
+        String expectedTag1 = "tag_" + System.currentTimeMillis();
+        String expectedTag2 = "tag_" + System.currentTimeMillis();
+
+        PostEditDTO request = PostEditDTO.builder()
+                .id(expectedId)
+                .title(expectedTitle)
+                .text(expectedText)
+                .tags(List.of(expectedTag1, expectedTag2))
+                .build();
+
+        // Act
+        PostDTO result = postService.editPost(request);
+
+        // Assert
+        assertThat(result).isNotNull();
+        assertThat(result.getTitle()).isEqualTo(expectedTitle);
+        assertThat(result.getText()).isEqualTo(expectedText);
+        assertThat(result.getTags()).contains(expectedTag1);
+        assertThat(result.getTags()).contains(expectedTag2);
     }
 }
 

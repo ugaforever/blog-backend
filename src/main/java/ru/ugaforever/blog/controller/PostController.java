@@ -4,10 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ugaforever.blog.dto.PageResponseDTO;
-import ru.ugaforever.blog.dto.PostCreateDTO;
-import ru.ugaforever.blog.dto.PostDTO;
-import ru.ugaforever.blog.dto.SearchRequestDTO;
+import ru.ugaforever.blog.dto.*;
 import ru.ugaforever.blog.service.PostService;
 
 //не должно быть зависимостей, нарушение архитектуры
@@ -111,7 +108,7 @@ public class PostController {
      * curl -X POST http://localhost:8080/api/posts -H "Content-Type: application/json" -d '{"title":"new post 3","text": "Новый пост.","tags": ["tag_1", "tag_2"]}'
      */
     @PostMapping("/posts")
-    public ResponseEntity<PostDTO> createPost( @Valid @RequestBody PostCreateDTO request) {
+    public ResponseEntity<PostDTO> createPost(@Valid @RequestBody PostCreateDTO request) {
 
         PostDTO response = postService.createPost(request);
 
@@ -119,4 +116,23 @@ public class PostController {
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
+
+    /**
+     * Редактировть пост
+     *
+     * @return отредактированный пост в JSON ({"id":3,"title":"Название поста 3","text":"Текст поста в формате Markdown...","tags":["tag_1","tag_2"],"likesCount":0,"commentsCount":0})
+     * @apiNote PUT /api/posts ({"title":"Название поста 3","text":"Текст поста в формате Markdown...","tags":["tag_1","tag_2"]})
+     *
+     * curl -X PUT http://localhost:8080/api/posts/1 -H "Content-Type: application/json" -d '{"id": "1","title": "edit title","text": "Ред Текст","tags": ["tag_3", "tag_4"]}'
+     */
+    @PutMapping("/posts/{id}")
+    public ResponseEntity<PostDTO> editPost( @Valid @RequestBody PostEditDTO request) {
+
+        PostDTO response = postService.editPost(request);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
 }

@@ -174,4 +174,45 @@ public class PostRepositoryUTest {
                     assertThat(post.getText()).isEqualTo("Text 1");
                 });
     }
+
+    @Test
+    void testEditAndReturnPost(){
+        // Arrange
+        Long expectedId = 123L;
+        String expectedTitle = "Edit Post";
+        String expectedText = "Edit Text";
+        String expectedTag1 = "tag_1";
+        String expectedTag2 = "tag_2";
+
+        Post expectedEditPost = Post.builder()
+                .id(expectedId)
+                .title(expectedTitle)
+                .text(expectedText)
+                .tags(List.of(expectedTag1, expectedTag2))
+                .build();
+
+        // Mock для findById
+        doReturn(List.of(expectedEditPost)).when(jdbcTemplate).query(
+                any(String.class),
+                any(Object[].class),
+                any(RowMapper.class)
+        );
+
+        // Act
+        Post result = postRepository.editAndReturnPost(
+                expectedId,
+                expectedTitle,
+                expectedText,
+                List.of(expectedTag1, expectedTag2)
+        );
+
+        // Assert
+        System.out.println(result);
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(expectedId);
+        assertThat(result.getTitle()).isEqualTo(expectedTitle);
+        assertThat(result.getText()).isEqualTo(expectedText);
+        assertThat(result.getTags()).contains(expectedTag1);
+        assertThat(result.getTags()).contains(expectedTag2);
+    }
 }

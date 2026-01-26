@@ -19,7 +19,6 @@ class PostMapperUTest {
     @InjectMocks
     private PostMapper postMapper;
 
-
     @Test
     void testToDTO() {
         // Arrange
@@ -86,6 +85,5 @@ class PostMapperUTest {
         assertThat(result.getTags().get(1)).isEqualTo(expectedTag2);
         assertThat(result.getLikesCount()).isEqualTo(expectedlikesCount);
         assertThat(result.getCommentsCount()).isEqualTo(expectedCommentsCount);
-
     }
 }
