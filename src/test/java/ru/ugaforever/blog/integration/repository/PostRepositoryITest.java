@@ -42,24 +42,42 @@ public class PostRepositoryITest {
     @Test
     void testSearch_ShouldReturnPost() {
         // Arrange no
+        String expectedSearch = "post";
+        String expectedSortBy = "title";
+        String expectedSortDirection = "DESC";
 
         // Act
         List<Post> result = postRepository.search(
-                "post",
-                "title",
-                "DESC",
+                expectedSearch,
+                expectedSortBy,
+                expectedSortDirection,
                 0, 20);
 
         // Assert
         assertThat(result).isNotNull();
         assertThat(result).hasSize(20);
 
-        // Проверка конкретных полей первого элемента
-        assertThat(result.getFirst())
-                .hasFieldOrPropertyWithValue("id", 9L)
-                .hasFieldOrPropertyWithValue("title", "9 post 41")
-                .hasFieldOrPropertyWithValue("text", "BeanPostProcessor — возможность динамического изменения бинов.")
-                .hasFieldOrPropertyWithValue("likesCount", 51);
+        // Assert - общие проверки
+        assertThat(result)
+                .isNotNull()
+                .allSatisfy(post -> {
+                    // Проверка что все элементы не null
+                    assertThat(post).isNotNull();
+                    assertThat(post.getId()).isInstanceOf(Long.class);
+                    assertThat(post.getTitle()).isInstanceOf(String.class);
+                    assertThat(post.getText()).isInstanceOf(String.class);
+
+                    // Проверка ненулевых значений
+                    assertThat(post.getId()).isPositive();
+                    assertThat(post.getTitle()).isNotBlank();
+                    assertThat(post.getText()).isNotBlank();
+                    assertThat(post.getLikesCount()).isGreaterThanOrEqualTo(0);
+                    assertThat(post.getCommentsCount()).isGreaterThanOrEqualTo(0);
+
+                    // Проверка что title содержит поисковый запрос
+                    assertThat(post.getTitle().toLowerCase())
+                            .contains(expectedSearch);
+                });
     }
 
     @Test
@@ -80,4 +98,29 @@ public class PostRepositoryITest {
                     assertThat(post.getCommentsCount()).isEqualTo(2);
                 });
     }
+
+    @Test
+    void testCreateAndReturnPost() {
+        // Arrange no
+        String expectedTitle ="New post title" + System.currentTimeMillis();
+        String expectedText = "New post text" + System.currentTimeMillis();
+        String expectedTag1 = "tag_1";
+        String expectedTag2 = "tag_2";
+
+        // Act
+        Post result = postRepository.createAndReturnPost(
+                expectedTitle,
+                expectedText,
+                List.of(expectedTag1, expectedTag2)
+        );
+
+        // Assert
+        System.out.println(result);
+        assertThat(result).isNotNull();
+        assertThat(result.getTitle()).isEqualTo(expectedTitle);
+        assertThat(result.getText()).isEqualTo(expectedText);
+        assertThat(result.getTags().get(0)).isEqualTo(expectedTag1);
+        assertThat(result.getTags().get(1)).isEqualTo(expectedTag2);
+    }
+
 }

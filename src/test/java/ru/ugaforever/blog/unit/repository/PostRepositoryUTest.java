@@ -137,7 +137,7 @@ public class PostRepositoryUTest {
         Post result = postRepository.createAndReturnPost(
                 expectedTitle,
                 expectedText,
-                List.of("tag1", "tag2")  // ✅ реальный список
+                List.of("tag1", "tag2")
         );
 
         // Assert
