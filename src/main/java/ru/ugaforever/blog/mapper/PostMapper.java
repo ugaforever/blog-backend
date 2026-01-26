@@ -54,7 +54,7 @@ public class PostMapper implements RowMapper<Post> {
         return dto;
     }
 
-    public Post toEntity(PostDTO dto) {
+    public Post toModel(PostDTO dto) {
         if (dto == null) {
             return null;
         }
@@ -68,15 +68,4 @@ public class PostMapper implements RowMapper<Post> {
                 .likesCount(dto.getLikesCount())
                 .build();
     }
-
-/*    public RowMapper<Post> rowMapper = (rs, rowNum) -> Post.builder()
-            .id(rs.getLong("id"))
-            .title(rs.getString("title"))
-            .text(rs.getString("text"))
-            .tags(parseTagsFromString(rs.getString("tags")))
-            .likesCount(rs.getInt("like_count"))
-            .commentsCount(rs.getInt("comment_count"))
-            .build();*/
-
-
 }
