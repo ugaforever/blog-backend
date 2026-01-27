@@ -1,18 +1,16 @@
 package ru.ugaforever.blog.repository;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.ugaforever.blog.mapper.CommentMapper;
-import ru.ugaforever.blog.mapper.PostMapper;
 import ru.ugaforever.blog.model.Comment;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 //не должно быть зависимостей, нарушение архитектуры
 //import ru.ugaforever.dto.*;
@@ -39,14 +37,24 @@ public class CommentRepository {
         return jdbcTemplate.query(sql.toString(), params.toArray(), commentMapper);
     }
 
-/*    private List<String> parseComments(String jsonComments){
-        try {
-            return objectMapper.readValue(
-                    jsonComments.trim(),
-                    new TypeReference<List<String>>() {});
-        } catch (Exception e) {
-            //TODO обработать некорректный JSON
-            return Collections.emptyList();
-        }
-    }*/
+    public List<Comment> createAndReturnComment(String text,
+                                          Long postId) {
+
+        String sql = "INSERT INTO comments (text, post_id) VALUES (?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, text);
+            ps.setLong(2, postId);
+            return ps;
+        }, keyHolder);
+
+        // Получаем сгенерированный ID
+        Long generatedId = keyHolder.getKey().longValue();
+
+        // Получаем полную запись по ID
+        return findAll(postId);
+    }
 }

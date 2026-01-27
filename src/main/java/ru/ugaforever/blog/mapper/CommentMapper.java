@@ -7,10 +7,6 @@ import ru.ugaforever.blog.model.Comment;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class CommentMapper implements RowMapper<Comment> {

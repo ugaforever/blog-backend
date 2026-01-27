@@ -9,11 +9,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import ru.ugaforever.blog.mapper.CommentMapper;
 import ru.ugaforever.blog.model.Comment;
-import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.CommentRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

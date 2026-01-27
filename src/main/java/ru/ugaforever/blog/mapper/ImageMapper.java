@@ -3,11 +3,6 @@ import org.springframework.stereotype.Component;
 import ru.ugaforever.blog.dto.ImageDTO;
 import ru.ugaforever.blog.model.Image;
 
-import java.io.IOException;
-import java.sql.Blob;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 @Component
 public class ImageMapper  {
     public ImageDTO toDTO(Image image) {

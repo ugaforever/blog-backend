@@ -1,8 +1,5 @@
 package ru.ugaforever.blog.controller;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +9,6 @@ import ru.ugaforever.blog.service.ImageService;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/posts/{id}/image")
@@ -67,9 +63,12 @@ public class ImageController {
      * @return массив байт картинки поста в теле ответа
      * @apiNote GET: /api/posts/{id}/image
      */
-    /*@GetMapping
+    @GetMapping
     public ResponseEntity<?> getImage(@PathVariable("id") Long id) {
-        ImageDTO image = imageService.getImage(id);
+
+        return ResponseEntity.ok().build();
+
+        /*ImageDTO image = imageService.getImage(id);
 
         if (image == null) {
             return ResponseEntity.notFound().build(); // HTTP 404
@@ -77,7 +76,7 @@ public class ImageController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
-                .body(image.getBody());
-    }*/
+                .body(image.getBody());*/
+    }
 }
 

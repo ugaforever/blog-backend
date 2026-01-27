@@ -1,9 +1,13 @@
 package ru.ugaforever.blog.service;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+import ru.ugaforever.blog.dto.CommentCreateDTO;
 import ru.ugaforever.blog.dto.CommentDTO;
+import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.mapper.CommentMapper;
 import ru.ugaforever.blog.model.Comment;
+import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.CommentRepository;
 
 
@@ -20,20 +24,12 @@ public class CommentService {
         this.commentMapper = commentMapper;
     }
 
-    private CommentDTO convertModelToDTO(Comment comment) {
-        CommentDTO dto = new CommentDTO();
-        dto.setId(comment.getId());
-        dto.setText(comment.getText());
-        dto.setPostId(comment.getPostId());
-        return dto;
-    }
-
     // Model → DTO
     public List<CommentDTO> getAllByPostId(Long postId) {
         //business-level
 
         return commentRepository.findAll(postId).stream()
-                .map(this::convertModelToDTO)
+                .map(commentMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -42,11 +38,11 @@ public class CommentService {
         //business-level
 
         List<CommentDTO> lstComments = commentRepository.findAll(postId).stream()
-                .map(this::convertModelToDTO)
+                .map(commentMapper::toDTO)
                 .collect(Collectors.toList());
 
-        for(CommentDTO commentDTO : lstComments){
-            if (commentDTO.getId() == commentId){
+        for (CommentDTO commentDTO : lstComments) {
+            if (commentDTO.getId() == commentId) {
                 return commentDTO;
             }
         }
@@ -54,4 +50,21 @@ public class CommentService {
         return null;
     }
 
+    public CommentDTO createComment(@Valid CommentCreateDTO request) {
+
+        List<CommentDTO> lstComments = commentRepository.createAndReturnComment(
+                request.getText(),
+                request.getPostId()
+        ).stream()
+                .map(commentMapper::toDTO)
+                .collect(Collectors.toList());
+
+        for (CommentDTO commentDTO : lstComments) {
+            if (commentDTO.getText() == request.getText()) {
+                return commentDTO;
+            }
+        }
+
+        return null;
+    }
 }

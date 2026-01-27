@@ -1,8 +1,13 @@
 package ru.ugaforever.blog.controller;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.ugaforever.blog.dto.CommentCreateDTO;
 import ru.ugaforever.blog.dto.CommentDTO;
+import ru.ugaforever.blog.dto.PostCreateDTO;
+import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.service.CommentService;
 
 import java.util.List;
@@ -21,9 +26,9 @@ public class CommentController {
      *
      * @param id идентификатор поста
      * @return JSON [{"id":1,"text":"Комментарий к посту 1","postId":1},{"id":2,"text":"Ещё один комментарий к посту 1","postId":1}]
-     * @apiNote POST: /api/posts/{id}/comments
+     * @apiNote GET: /api/posts/{id}/comments
      */
-    @PostMapping
+    @GetMapping
     public ResponseEntity<List<CommentDTO>> getAllComments(@PathVariable("id") Long id) {
 
         return ResponseEntity.ok(commentService.getAllByPostId(id)); // HTTP 200
@@ -50,5 +55,25 @@ public class CommentController {
         else {
             return ResponseEntity.ok(commentDTO); // HTTP 200
         }
+    }
+
+
+    /**
+     * Добавить комментарий к посту
+     *
+     * @param id идентификатор поста
+     * @return JSON [{"id":1,"text":"Комментарий к посту 1","postId":1},{"id":2,"text":"Ещё один комментарий к посту 1","postId":1}]
+     * @apiNote POST: /api/posts/{id}/comments
+     */
+    @PostMapping
+    public ResponseEntity<CommentDTO> addComment(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody CommentCreateDTO request) {
+
+        CommentDTO response = commentService.createComment(request);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 }

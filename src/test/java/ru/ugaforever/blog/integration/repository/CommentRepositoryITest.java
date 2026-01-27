@@ -10,9 +10,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.ugaforever.blog.integration.configuration.CommentRepositoryTestConfig;
 import ru.ugaforever.blog.mapper.CommentMapper;
 import ru.ugaforever.blog.model.Comment;
+import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.CommentRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,4 +59,34 @@ public class CommentRepositoryITest {
                     assertThat(comment.getText()).isNotBlank();
                 });
     }
+    @Test
+    void testCreateComment() {
+        // Arrange no
+        String expectedText = "New comment title" + System.currentTimeMillis();
+        long expectedPostId = 1L;
+
+        // Act
+        List<Comment> result = commentRepository.createAndReturnComment(
+                expectedText,
+                expectedPostId
+        );
+
+        // Assert
+        assertThat(result).isNotNull();
+
+        // Ищем комментарий содержащий определенный текст
+        Optional<Comment> newComment = result.stream()
+                .filter(comment -> comment.getText().contains(expectedText))
+                .findFirst();
+
+        assertThat(newComment)
+                .isPresent()
+                .get()
+                .satisfies(comment -> {
+                    assertThat(comment.getText()).containsIgnoringCase(expectedText);
+                    assertThat(comment.getId()).isGreaterThanOrEqualTo(0);
+                    assertThat(comment.getPostId()).isGreaterThanOrEqualTo(0);
+                });
+    }
+
 }

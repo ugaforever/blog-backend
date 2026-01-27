@@ -11,8 +11,6 @@ import ru.ugaforever.blog.model.Image;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 //не должно быть зависимостей, нарушение архитектуры

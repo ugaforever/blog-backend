@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.ugaforever.blog.dto.CommentCreateDTO;
 import ru.ugaforever.blog.dto.CommentDTO;
 import ru.ugaforever.blog.integration.configuration.CommentServiceTestConfig;
 import ru.ugaforever.blog.service.CommentService;
@@ -96,5 +97,30 @@ public class CommentServiceITest {
         assertThat(result.getId()).isPositive();
         assertThat(result.getText()).isNotBlank();
         assertThat(result.getPostId()).isPositive();
+    }
+
+    @Test
+    void testCreateComment(){
+        // Arrange
+        String expectedText = "New comment title" + System.currentTimeMillis();
+        long expectedPostId = 1L;
+
+        CommentCreateDTO request = CommentCreateDTO.builder()
+                .text(expectedText)
+                .postId(expectedPostId)
+                .build();
+
+        // Act
+        CommentDTO result = commentService.createComment(request);
+
+        // Assert
+        assertThat(result).isNotNull();
+
+        assertThat(result.getId()).isNotNull();
+        assertThat(result.getId()).isInstanceOf(Long.class);
+        assertThat(result.getId()).isPositive();
+
+        assertThat(result.getText()).isEqualTo(expectedText);
+        assertThat(result.getPostId()).isEqualTo(expectedPostId);
     }
 }

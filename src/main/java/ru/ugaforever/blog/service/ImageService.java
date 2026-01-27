@@ -1,15 +1,10 @@
 package ru.ugaforever.blog.service;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ugaforever.blog.dto.ImageDTO;
-import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.model.Image;
-import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.ImageRepository;
-import ru.ugaforever.blog.repository.PostRepository;
 
 import java.util.Optional;
 
