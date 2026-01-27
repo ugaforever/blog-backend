@@ -1,35 +1,27 @@
 package ru.ugaforever.blog.integration.configuration;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import ru.ugaforever.blog.mapper.PostMapper;
-import ru.ugaforever.blog.repository.PostRepository;
+import ru.ugaforever.blog.mapper.CommentMapper;
+import ru.ugaforever.blog.repository.CommentRepository;
+
 
 import javax.sql.DataSource;
 
-/**
- * простая конфигурация для интеграционных тестов PostRepository
- * рефактор тестов:
- * 1. иерархия конфигураций
- * 2. абстракные классы интеграционных тестов с преднастройкой конфигураций и сканирования бинов
- */
-
 @Configuration
-public class PostRepositoryTestConfig {
-
+public class CommentRepositoryTestConfig {
     @Bean
-    public PostRepository postRepository() {
-        return new PostRepository(jdbcTemplate(dataSource()), postMapper());
+    public CommentRepository commentRepository() {
+        return new CommentRepository(jdbcTemplate(dataSource()), commentMapper());
     }
 
     @Bean
-    public PostMapper postMapper() {
-        return new PostMapper();
+    public CommentMapper commentMapper() {
+        return new CommentMapper();
     }
 
     @Bean
@@ -52,3 +44,4 @@ public class PostRepositoryTestConfig {
         return new JdbcTemplate(dataSource);
     }
 }
+

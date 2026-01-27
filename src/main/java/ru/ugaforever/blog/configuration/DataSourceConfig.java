@@ -50,6 +50,9 @@ public class DataSourceConfig {
         populator.addScript(new ClassPathResource("schema.sql")); // схема
         populator.addScript(new ClassPathResource("data.sql")); // наполнение
 
+
+
+
         populator.execute(dataSource);
     }
 

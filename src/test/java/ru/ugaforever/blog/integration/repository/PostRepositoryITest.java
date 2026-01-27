@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Интеграционные тесты с реальной БД
  */
 
-
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = PostRepositoryTestConfig.class)
 public class PostRepositoryITest {

@@ -1,6 +1,9 @@
 package ru.ugaforever.blog.service;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.ugaforever.blog.dto.ImageDTO;
 import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.model.Image;
@@ -31,5 +34,24 @@ public class ImageService {
         imageDTO.setBody(image.getBody());
 
         return imageDTO;
+    }
+
+    public ImageDTO updateImage(Long id,
+                                MultipartFile imageFile) {
+
+        Optional<Image> imageOpt = imageRepository.updateImage(id, imageFile);
+
+        if (imageOpt.isEmpty()) {
+            throw new RuntimeException("Adding image for post id: " + id + " not found");
+        }
+
+        Image image = imageOpt.get();
+
+        ImageDTO imageDTO = new ImageDTO();
+        imageDTO.setBody(image.getBody());
+
+        return imageDTO;
+
+
     }
 }

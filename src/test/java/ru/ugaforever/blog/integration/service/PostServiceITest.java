@@ -6,18 +6,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.ugaforever.blog.dto.*;
 import ru.ugaforever.blog.integration.configuration.PostServiceTestConfig;
-import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.service.PostService;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = PostServiceTestConfig.class)

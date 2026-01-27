@@ -2,6 +2,7 @@ package ru.ugaforever.blog.service;
 
 import org.springframework.stereotype.Service;
 import ru.ugaforever.blog.dto.CommentDTO;
+import ru.ugaforever.blog.mapper.CommentMapper;
 import ru.ugaforever.blog.model.Comment;
 import ru.ugaforever.blog.repository.CommentRepository;
 
@@ -12,9 +13,11 @@ import java.util.stream.Collectors;
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
 
-    public CommentService(CommentRepository commentRepository) {
+    public CommentService(CommentRepository commentRepository, CommentMapper commentMapper) {
         this.commentRepository = commentRepository;
+        this.commentMapper = commentMapper;
     }
 
     private CommentDTO convertModelToDTO(Comment comment) {
@@ -26,9 +29,9 @@ public class CommentService {
     }
 
     // Model → DTO
-/*    public List<CommentDTO> getAllCommentsById(Long id) {
+    public List<CommentDTO> getAllCommentsById(Long id) {
         return commentRepository.findAll(id).stream()
                 .map(this::convertModelToDTO)
                 .collect(Collectors.toList());
-    }*/
+    }
 }

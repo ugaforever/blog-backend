@@ -21,7 +21,5 @@ public class PostServiceTestConfig {
     @Bean
     public PostService postService() {
         return new PostService(postRepository, postMapper);
-        // Spring найдёт через @ComponentScan
-        //return null; // будет заменено
     }
 }

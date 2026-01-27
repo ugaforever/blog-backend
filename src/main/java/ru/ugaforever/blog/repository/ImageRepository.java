@@ -1,13 +1,18 @@
 package ru.ugaforever.blog.repository;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
+import ru.ugaforever.blog.mapper.ImageMapper;
+
 import ru.ugaforever.blog.model.Image;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 //не должно быть зависимостей, нарушение архитектуры
@@ -15,36 +20,64 @@ import java.util.Optional;
 
 @Repository
 public class ImageRepository {
-    private final Path storagePath;
+    private final JdbcTemplate jdbcTemplate;
+    private final ImageMapper imageMapper;
 
-    public ImageRepository(
-            @Value("${app.storage.image}") String storageString) {
-        this.storagePath = Paths.get(storageString).toAbsolutePath().normalize();
-
-       try {
-            Files.createDirectories(this.storagePath);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to create image directory", e);
-        }
+    public ImageRepository(JdbcTemplate jdbcTemplate, ImageMapper imageMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.imageMapper = imageMapper;
     }
 
     public Optional<Image> findById(Long id) {
-        try {
-            Path imagePath = storagePath.resolve(id + ".jpg");
+        String sql = "SELECT image FROM posts WHERE id = ?";
 
-            if (!Files.exists(imagePath)) {
+        try {
+            Blob imageBlob = jdbcTemplate.queryForObject(
+                    sql,
+                    Blob.class,
+                    id
+            );
+
+            if (imageBlob == null) {
                 return Optional.empty();
             }
 
-            byte[] imageBytes = Files.readAllBytes(imagePath);
-
             Image image = new Image();
-            image.setBody(imageBytes);
+            image.setId(id);
 
-            return Optional.of(image);
+            try {
+                // Получаем байты из BLOB
+                byte[] imageData = imageBlob.getBytes(1, (int) imageBlob.length());
+                image.setBody(imageData);
 
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading image with id: " + id, e);
+            } catch (SQLException e) {
+                return Optional.empty();
+            }
+
+            return Optional.of(image); // ✅ Используем Optional.of() (не ofNullable)
+
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        } catch (Exception e) {
+            return Optional.empty();
         }
+    }
+    public Optional<Image> updateImage(Long id, MultipartFile imageFile) {
+
+        try {
+            String sql = "UPDATE posts SET image = ? WHERE id = ?";
+            int rowsAffected = jdbcTemplate.update(
+                    sql,
+                    imageFile.getBytes(),
+                    id
+            );
+            if (rowsAffected == 0) {
+                return Optional.empty();
+            }
+        }catch(IOException e){
+            return Optional.empty();
+        }
+
+        return findById(id);
     }
 }
