@@ -78,11 +78,11 @@ public class PostController {
      * @return 200 Ok
      * @apiNote DELETE: /api/posts/{id}
      */
-    /*@DeleteMapping("/posts/{id}")
+    @DeleteMapping("/posts/{id}")
     public ResponseEntity deletePost(@PathVariable(name = "id") Long id) {
         postService.deleteById(id);
         return ResponseEntity.ok().build();
-    }*/
+    }
 
     /**
      * Инкремент числа лайков поста

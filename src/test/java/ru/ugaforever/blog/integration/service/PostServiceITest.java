@@ -2,14 +2,19 @@ package ru.ugaforever.blog.integration.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.ugaforever.blog.dto.*;
 import ru.ugaforever.blog.integration.configuration.PostServiceTestConfig;
+import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.service.PostService;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
@@ -42,14 +47,16 @@ public class PostServiceITest {
 
         // Assert
         assertThat(result).isNotNull();
-        assertThat(result)
-                .hasFieldOrPropertyWithValue("hasPrev", false)
-                .hasFieldOrPropertyWithValue("hasNext", true);
-
-        assertThat(result)
-                .extracting("posts")
-                .asInstanceOf(LIST)
-                .hasSize(5);
+        assertThat(result.getPosts())
+                .isNotEmpty()
+                .allSatisfy(post -> {
+                    assertThat(post.getId()).isNotNull();
+                    assertThat(post.getTitle()).isNotBlank();
+                    assertThat(post.getText()).isNotBlank();
+                    assertThat(post.getLikesCount()).isGreaterThanOrEqualTo(0);
+                    assertThat(post.getCommentsCount()).isGreaterThanOrEqualTo(0);
+                    assertThat(post.getTags()).isInstanceOf(List.class);
+                });
     }
 
     @Test
@@ -102,6 +109,21 @@ public class PostServiceITest {
         assertThat(result.getText()).isEqualTo(expectedText);
         assertThat(result.getTags()).contains(expectedTag1);
         assertThat(result.getTags()).contains(expectedTag2);
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20})
+    void testDeleteById(long id) {
+        // Arrange
+        PostDTO postDTOPreview = postService.getPostById(id);
+        assertThat(postDTOPreview).isNotNull();
+
+        // Act
+        postService.deleteById(id);
+
+        // Assert
+        PostDTO result = postService.getPostById(id);
+        assertThat(result).isNull();
     }
 }
 

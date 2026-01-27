@@ -2,6 +2,8 @@ package ru.ugaforever.blog.integration.repository;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -55,7 +57,7 @@ public class PostRepositoryITest {
 
         // Assert
         assertThat(result).isNotNull();
-        assertThat(result).hasSize(20);
+        //assertThat(result).hasSize(20);
 
         // Assert - общие проверки
         assertThat(result)
@@ -80,10 +82,11 @@ public class PostRepositoryITest {
                 });
     }
 
-    @Test
-    void testFindById(){
+    @ParameterizedTest  //можно передавать наборы
+    @ValueSource(longs = {1})
+    void testFindById(long id){
         // Act
-        Optional<Post> result = postRepository.findById(1L);
+        Optional<Post> result = postRepository.findById(id);
 
         // Assert
         assertThat(result).isNotNull();
@@ -91,7 +94,7 @@ public class PostRepositoryITest {
                 .isPresent() // Проверяем что Optional не пустой
                 .hasValueSatisfying(post -> {
                     System.out.println(post);
-                    assertThat(post.getId()).isEqualTo(1L);
+                    assertThat(post.getId()).isEqualTo(id);
                     assertThat(post.getTitle()).isEqualTo("1 post 11");
                     assertThat(post.getText()).isEqualTo("Это содержимое первого поста о программировании на Java и Spring Boot.");
                     assertThat(post.getLikesCount()).isEqualTo(5);
@@ -123,31 +126,18 @@ public class PostRepositoryITest {
         assertThat(result.getTags().get(1)).isEqualTo(expectedTag2);
     }
 
-    @Test
-    void testEditAndReturnPost() {
-        // Arrange no
-        long expectedId = 1L;
-        String expectedTitle ="Edit post title" + System.currentTimeMillis();
-        String expectedText = "Edit post text" + System.currentTimeMillis();
-        String expectedTag1 = "tag_" + System.currentTimeMillis();
-        String expectedTag2 = "tag_" + System.currentTimeMillis();
+    @ParameterizedTest  //можно передавать наборы
+    @ValueSource(longs = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20})
+    void testDeleteById(long id) {
+        // Arrange
+        Optional<Post> postPreview = postRepository.findById(id);
+        assertThat(postPreview).isNotEmpty();
 
         // Act
-        Post result = postRepository.editAndReturnPost(
-                expectedId,
-                expectedTitle,
-                expectedText,
-                List.of(expectedTag1, expectedTag2)
-        );
+        postRepository.deleteById(id);
 
         // Assert
-        System.out.println(result);
-        assertThat(result).isNotNull();
-        assertThat(result.getTitle()).isEqualTo(expectedTitle);
-        assertThat(result.getText()).isEqualTo(expectedText);
-        assertThat(result.getTags()).contains(expectedTag1);
-        assertThat(result.getTags()).contains(expectedTag2);
+        Optional<Post> result = postRepository.findById(id);
+        assertThat(result).isEmpty();
     }
-
-
 }

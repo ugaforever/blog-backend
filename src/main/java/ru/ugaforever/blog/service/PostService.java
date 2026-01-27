@@ -33,19 +33,17 @@ public class PostService {
         Optional<Post> postOpt = postRepository.findById(id);
         if (postOpt.isEmpty()) {
             //TODO сейчас HTTP 500
-            throw new RuntimeException("Post not found with id: " + id);
+            //throw new RuntimeException("Post not found with id: " + id);
+            return null;
         }
 
         return postMapper.toDTO(postOpt.get());
     }
 
-
-
     // DTO -> Model
-/*    public void deleteById(Long id) {
+    public void deleteById(Long id) {
         postRepository.deleteById(id);
-
-    }*/
+    }
 
     /*public int addLikeAndGetCount(Long id) {
         return postRepository.addLikeAndGetCount(id);
