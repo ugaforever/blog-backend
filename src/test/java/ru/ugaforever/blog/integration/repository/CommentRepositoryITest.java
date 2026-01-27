@@ -11,7 +11,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.ugaforever.blog.integration.configuration.CommentRepositoryTestConfig;
 import ru.ugaforever.blog.mapper.CommentMapper;
 import ru.ugaforever.blog.model.Comment;
-import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.CommentRepository;
 
 import java.util.List;

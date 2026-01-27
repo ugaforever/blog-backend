@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ugaforever.blog.dto.CommentCreateDTO;
 import ru.ugaforever.blog.dto.CommentDTO;
-import ru.ugaforever.blog.dto.PostCreateDTO;
-import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.service.CommentService;
 
 import java.util.List;

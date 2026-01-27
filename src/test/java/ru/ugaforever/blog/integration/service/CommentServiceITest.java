@@ -10,7 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.ugaforever.blog.dto.CommentCreateDTO;
 import ru.ugaforever.blog.dto.CommentDTO;
-import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.integration.configuration.CommentServiceTestConfig;
 import ru.ugaforever.blog.service.CommentService;
 

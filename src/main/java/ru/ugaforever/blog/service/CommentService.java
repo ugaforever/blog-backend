@@ -4,10 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import ru.ugaforever.blog.dto.CommentCreateDTO;
 import ru.ugaforever.blog.dto.CommentDTO;
-import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.mapper.CommentMapper;
-import ru.ugaforever.blog.model.Comment;
-import ru.ugaforever.blog.model.Post;
 import ru.ugaforever.blog.repository.CommentRepository;
 
 
@@ -61,7 +58,7 @@ public class CommentService {
                 .collect(Collectors.toList());
 
         for (CommentDTO commentDTO : lstComments) {
-            if (commentDTO.getText() == request.getText()) {
+            if (commentDTO.getText().equals(request.getText())) {
                 return commentDTO;
             }
         }

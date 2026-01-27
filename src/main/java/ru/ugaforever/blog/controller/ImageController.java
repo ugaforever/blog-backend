@@ -1,10 +1,8 @@
 package ru.ugaforever.blog.controller;
 
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.ugaforever.blog.dto.ImageDTO;
 import ru.ugaforever.blog.service.ImageService;
 
 import java.util.Arrays;
