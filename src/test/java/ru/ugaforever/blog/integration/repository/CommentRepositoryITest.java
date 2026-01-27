@@ -3,6 +3,7 @@ package ru.ugaforever.blog.integration.repository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -87,6 +88,47 @@ public class CommentRepositoryITest {
                     assertThat(comment.getId()).isGreaterThanOrEqualTo(0);
                     assertThat(comment.getPostId()).isGreaterThanOrEqualTo(0);
                 });
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1,	1", "1,	2",
+            "2,	3", "2,	4", "2,	5",
+            "3,	6", "3,	7", "3,	8",
+            "4,	9",
+            "5,	10", "5, 11", "5, 12",
+            "6,	13",
+            "7,	14",
+            "8,	15",
+            "9,	16",
+            "10, 17",
+            "11, 18", "11, 19",
+            "12, 20",
+            "13, 21",
+            "14, 22",
+            "15, 23", "15, 24",
+            "16, 25", "16, 26",
+            "17, 27",
+            "18, 28",
+            "18, 29", "18, 30", "18, 31",
+            "19, 32",
+            "20, 33", "20, 34", "20, 35",
+    })
+    void testDeleteById(long postId, long commentId) {
+        // Arrange
+        List<Comment> comments = commentRepository.findAll(postId);
+        assertThat(comments)
+                .anySatisfy(comment -> {
+                    assertThat(comment.getId()).isEqualTo(commentId);
+                });
+
+        // Act
+        commentRepository.deleteById(postId, commentId);
+
+        // Assert
+        List<Comment> result = commentRepository.findAll(postId);
+        assertThat(result)
+                .noneMatch(comment -> (comment.getId().equals(commentId)));
     }
 
 }

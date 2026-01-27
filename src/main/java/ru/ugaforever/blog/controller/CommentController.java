@@ -76,4 +76,20 @@ public class CommentController {
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
+
+    /**
+     * Удалить комментарйи
+     *
+     * @param id идентификатор поста
+     * @param commentId идентификатор комментайия
+     * @return 200 Ok
+     * @apiNote DELETE: /api/posts/{id}/comments/{commentId}
+     */
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity deleteComment(@PathVariable(name = "id") Long id,
+                                        @PathVariable(name = "commentId") Long commentId) {
+        commentService.deleteById(id, commentId);
+        return ResponseEntity.ok().build();
+    }
+
 }

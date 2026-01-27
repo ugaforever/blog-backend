@@ -57,4 +57,9 @@ public class CommentRepository {
         // Получаем полную запись по ID
         return findAll(postId);
     }
+
+    public void deleteById(Long id, Long commentId) {
+        String sql = "DELETE FROM comments WHERE (post_id = ?) AND (id = ?)";
+        jdbcTemplate.update(sql, id, commentId);
+    }
 }

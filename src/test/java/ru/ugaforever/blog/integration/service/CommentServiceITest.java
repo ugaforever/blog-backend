@@ -10,12 +10,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.ugaforever.blog.dto.CommentCreateDTO;
 import ru.ugaforever.blog.dto.CommentDTO;
+import ru.ugaforever.blog.dto.PostDTO;
 import ru.ugaforever.blog.integration.configuration.CommentServiceTestConfig;
 import ru.ugaforever.blog.service.CommentService;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.atomicIntegerFieldUpdater;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = CommentServiceTestConfig.class)
@@ -122,5 +124,42 @@ public class CommentServiceITest {
 
         assertThat(result.getText()).isEqualTo(expectedText);
         assertThat(result.getPostId()).isEqualTo(expectedPostId);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "1,	1", "1,	2",
+            "2,	3", "2,	4", "2,	5",
+            "3,	6", "3,	7", "3,	8",
+            "4,	9",
+            "5,	10", "5, 11", "5, 12",
+            "6,	13",
+            "7,	14",
+            "8,	15",
+            "9,	16",
+            "10, 17",
+            "11, 18", "11, 19",
+            "12, 20",
+            "13, 21",
+            "14, 22",
+            "15, 23", "15, 24",
+            "16, 25", "16, 26",
+            "17, 27",
+            "18, 28",
+            "18, 29", "18, 30", "18, 31",
+            "19, 32",
+            "20, 33", "20, 34", "20, 35",
+    })
+    void testDeleteById(long postId, long commentId) {
+        // Arrange
+        CommentDTO commentDTO = commentService.getCommentByCommentId(postId, commentId);
+        assertThat(commentDTO.getId()).isEqualTo(commentId);
+
+        // Act
+        commentService.deleteById(postId, commentId);
+
+        // Assert
+        CommentDTO result = commentService.getCommentByCommentId(postId, commentId);
+        assertThat(result).isNull();
     }
 }
