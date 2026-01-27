@@ -26,7 +26,7 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<List<CommentDTO>> getAllComments(@PathVariable("id") Long id) {
 
-        return ResponseEntity.ok(commentService.getAllCommentsById(id)); // HTTP 200
+        return ResponseEntity.ok(commentService.getAllByPostId(id)); // HTTP 200
     }
 
     /**
@@ -37,18 +37,18 @@ public class CommentController {
      * @return JSON {"id":2,"text":"Ещё один комментарий к посту 1","postId":1}
      * @apiNote GET: /api/posts/{id}/comments/{commentId}
      */
-/*    @GetMapping("/{commentId}")
+    @GetMapping("/{commentId}")
     public ResponseEntity<CommentDTO> getComment(@PathVariable("id") Long id,
                                                  @PathVariable("commentId") Long commentId) {
 
-        List<CommentDTO> lstCommentDTO = commentService.getAllCommentsById(id);
-        for(CommentDTO cdto: lstCommentDTO){
-            if (cdto.getId() == commentId){
-                return ResponseEntity.ok(cdto); // HTTP 200
-            }
+        CommentDTO commentDTO = commentService.getCommentByCommentId(id, commentId);
+
+        //переделать
+        if (commentDTO == null){
+            return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.notFound().build();
-    }*/
-
+        else {
+            return ResponseEntity.ok(commentDTO); // HTTP 200
+        }
+    }
 }
