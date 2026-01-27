@@ -125,5 +125,20 @@ public class PostServiceITest {
         PostDTO result = postService.getPostById(id);
         assertThat(result).isNull();
     }
+
+    @ParameterizedTest
+    @ValueSource(longs = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20})
+    void testAddLikeAndGetCount(long id) {
+        // Arrange
+        int count = postService.addLikeAndGetCount(id);
+        int expectedCount = count + 1;
+
+        // Act
+        int result = postService.addLikeAndGetCount(id);
+
+        // Assert
+        assertThat(result).isEqualTo(expectedCount);
+    }
+
 }
 

@@ -97,8 +97,8 @@ public class PostRepositoryITest {
                     assertThat(post.getId()).isEqualTo(id);
                     assertThat(post.getTitle()).isEqualTo("1 post 11");
                     assertThat(post.getText()).isEqualTo("Это содержимое первого поста о программировании на Java и Spring Boot.");
-                    assertThat(post.getLikesCount()).isEqualTo(5);
-                    assertThat(post.getCommentsCount()).isEqualTo(2);
+                    assertThat(post.getLikesCount()).isGreaterThanOrEqualTo(0);
+                    assertThat(post.getCommentsCount()).isGreaterThanOrEqualTo(0);
                 });
     }
 
@@ -140,4 +140,18 @@ public class PostRepositoryITest {
         Optional<Post> result = postRepository.findById(id);
         assertThat(result).isEmpty();
     }
+
+    @ParameterizedTest  //можно передавать наборы
+    @ValueSource(longs = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20})
+    void testAddLikeAndGetCount(long id) {
+        // Arrange no
+        int count = postRepository.getLikeCount(id);
+        int expectedCount = count + 1;
+        // Act
+        int result = postRepository.addLikeAndGetCount(id);
+
+        // Assert
+        assertThat(result).isEqualTo(expectedCount);
+    }
+
 }

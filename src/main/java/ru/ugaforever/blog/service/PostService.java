@@ -45,10 +45,10 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
-    /*public int addLikeAndGetCount(Long id) {
+    public int addLikeAndGetCount(Long id) {
         return postRepository.addLikeAndGetCount(id);
     }
-*/
+
     public PageResponseDTO<PostDTO> searchPosts(SearchRequestDTO request) {
         // Получаем данные из репозитория
         List<Post> posts;

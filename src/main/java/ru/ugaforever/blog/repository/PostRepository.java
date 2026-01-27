@@ -139,13 +139,16 @@ public class PostRepository {
     }
 
     public int addLikeAndGetCount(Long id) {
-        String updateSql = "UPDATE posts SET like_count = like_count + 1 WHERE id = ?";
-        int updatedRows = jdbcTemplate.update(updateSql, id);
+        String sql = "UPDATE posts SET like_count = like_count + 1 WHERE id = ?";
+        int updatedRows = jdbcTemplate.update(sql, id);
 
-        String selectSql = "SELECT like_count FROM posts WHERE id = ?";
-        return jdbcTemplate.queryForObject(selectSql, Integer.class, id);
+        return getLikeCount(id);
     }
 
+    public int getLikeCount(Long id) {
+        String sql = "SELECT like_count FROM posts WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, id);
+    }
 
     public Post createAndReturnPost(String title,
                                     String text,
