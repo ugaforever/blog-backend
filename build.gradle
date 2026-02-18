@@ -21,27 +21,40 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	testImplementation 'org.springframework.boot:spring-boot-starter-data-jdbc-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Database
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	runtimeOnly 'com.h2database:h2'
+
+	// Test dependencies
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Optional test dependencies
+	testImplementation 'org.assertj:assertj-core'
+	testImplementation 'org.mockito:mockito-core'
+	testImplementation 'org.mockito:mockito-junit-jupiter'
+
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
+// включение JUnit5
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
+// исполнение задачи по добавлению информации о сборке
 springBoot {
-	buildInfo()  // исполнение задачи по добавлению информации о сборке
+	buildInfo()
 }
 
+// добавление атрибутов к манифесту
 bootJar {
-	// добавление атрибутов к манифесту
 	manifest {
 		attributes(
 				'Implementation-Title': 'My Blog backend',
@@ -49,9 +62,6 @@ bootJar {
 				'Built-By': project.hasProperty('builtBy') ? project.property('builtBy') : 'default-builder'
 		)
 	}
-	// явное указание класса запуска приложения (игнорируется результат :resolveMainClassName)
-	//mainClass = 'ru.yandex.AnotherEntrypoint'
-	// имя и версия создаваемого архива
 	archiveBaseName = 'my-blog-back-app-boot'
 	archiveVersion = '1.0.0'
 }
