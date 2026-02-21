@@ -1,0 +1,209 @@
+package ru.ugaforever.boot.blog.repository;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+import ru.ugaforever.boot.blog.mapper.PostMapper;
+import ru.ugaforever.boot.blog.model.Post;
+
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@Slf4j
+@Repository
+//@RequiredArgsConstructor
+public class PostRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+    private final PostMapper postMapper;
+
+    public PostRepository(JdbcTemplate jdbcTemplate, PostMapper postMapper) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.postMapper = postMapper;
+    }
+
+    public List<Post> search(String search,
+                             String sortBy,
+                             String sortDirection,
+                             int offset,
+                             int limit) {
+
+        StringBuilder sql = new StringBuilder(
+                """
+                SELECT
+                        posts.id,
+                        posts.title as title,
+                        posts.text,
+                        posts.like_count,
+                        (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) as comment_count,
+                        (SELECT STRING_AGG(DISTINCT tags.tag, ',') FROM tags WHERE tags.post_id = posts.id) as tags
+                FROM posts
+                LEFT JOIN tags ON tags.post_id = posts.id
+                WHERE 1=1 
+                """
+        );
+
+        List<Object> params = new ArrayList<>();
+
+        //TODO добавить поиск по тэгам
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(" AND (LOWER(title) LIKE LOWER(?))");
+            String searchPattern = "%" + search + "%";
+            params.add(searchPattern);
+        }
+
+        // Добавляем группировку
+        sql.append(" GROUP BY posts.id ");
+
+        // Добавляем сортировку
+        sql.append(" ORDER BY ")
+                .append(validateSortField(sortBy))
+                .append(" ")
+                .append("DESC".equalsIgnoreCase(sortDirection) ? "DESC" : "ASC");
+
+        // Добавляем пагинацию
+        sql.append(" LIMIT ?");
+        params.add(limit);
+        sql.append(" OFFSET ?");
+        params.add(offset);
+
+        return jdbcTemplate.query(sql.toString(), params.toArray(), postMapper); //через объект postMapper
+    }
+
+    public long countSearch(String search) {
+
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) FROM posts WHERE 1=1"
+        );
+        List<Object> params = new ArrayList<>();
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql.append(" AND (LOWER(title) LIKE LOWER(?))");
+            String searchPattern = "%" + search + "%";
+            params.add(searchPattern);
+        }
+
+        return jdbcTemplate.queryForObject(sql.toString(), Long.class, params.toArray());
+    }
+
+    // Методы findAll и countAll (аналогично, но без поиска по тексту)
+
+    private String validateSortField(String field) {
+        // Белый список полей для сортировки
+        if(field == null) return "title";
+
+        List<String> allowedFields = List.of("id", "title", "text");
+        return allowedFields.contains(field) ? field : "title";
+    }
+
+    public Optional<Post> findById(Long id) {
+
+        StringBuilder sql = new StringBuilder(
+                """
+                SELECT
+                        posts.id,
+                        posts.title as title,
+                        posts.text,
+                        posts.like_count,
+                        (SELECT COUNT(*) FROM comments WHERE post_id = posts.id) as comment_count,
+                        (SELECT STRING_AGG(DISTINCT tags.tag, ',') FROM tags WHERE tags.post_id = posts.id) as tags
+                FROM posts
+                LEFT JOIN tags ON tags.post_id = posts.id
+                WHERE posts.id = ? 
+                """
+        );
+
+        List<Object> params = new ArrayList<>();
+        params.add(id);
+
+        List<Post> posts = jdbcTemplate.query(sql.toString(), params.toArray(), postMapper); //через объект postMapper
+
+        // Берём первый элемент если есть
+        return posts.isEmpty() ? Optional.empty() : Optional.of(posts.getFirst());
+    }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM posts WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    public int addLikeAndGetCount(Long id) {
+        String sql = "UPDATE posts SET like_count = like_count + 1 WHERE id = ?";
+        int updatedRows = jdbcTemplate.update(sql, id);
+
+        return getLikeCount(id);
+    }
+
+    public int getLikeCount(Long id) {
+        String sql = "SELECT like_count FROM posts WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, id);
+    }
+
+    public Post createAndReturnPost(String title,
+                                    String text,
+                                    List<String> tags) {
+
+        String sql = "INSERT INTO posts (title, text) VALUES (?, ?)";
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, title);
+            ps.setString(2, text);
+            return ps;
+        }, keyHolder);
+
+        // Получаем сгенерированный ID
+        Long generatedId = keyHolder.getKey().longValue();
+
+        // Добавляем тэги
+        addTags(generatedId, tags);
+
+        // Получаем полную запись по ID
+        return findById(generatedId).get();
+    }
+
+    private void addTags(Long id, List<String> tags){
+        String sql = "INSERT INTO tags (post_id, tag) VALUES (?, ?)";
+
+        for (String tag : tags) {
+            jdbcTemplate.update(sql, id, tag);
+        }
+    }
+
+    public Post editAndReturnPost(
+            Long id,
+            String title,
+            String text,
+            List<String> tags) {
+
+        // Получаем полную запись по ID
+        Optional<Post> post = findById(id);
+        if (post.isEmpty()){
+            return Post.builder().build();
+            //TODO почитать про какую-нибудь стройную обработку исключений
+        }
+
+        String sql = "UPDATE posts SET title = ?, text = ? WHERE id = ?";
+        jdbcTemplate.update(sql, title, text, id);
+
+        // Добавляем тэги
+        addTags(id, tags);
+
+        // Получаем полную запись по ID
+        return findById(id).get();
+    }
+}
+
+
+
+
+
+
+
