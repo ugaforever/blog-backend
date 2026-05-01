@@ -59,8 +59,8 @@ public class PostServiceUTest {
 
         doReturn(mockPostsFromRepository).when(postRepository).search(
                 any(String.class),
-                isNull(),
-                isNull(),
+                any(String.class),
+                any(String.class),
                 eq(0),
                 anyInt()
         );
@@ -68,6 +68,7 @@ public class PostServiceUTest {
         when(postRepository.countSearch(
                 any(String.class)
         )).thenReturn(20L);
+
 
         when(postMapper.toDTO(mockPostsFromRepository.get(0))).thenReturn(mockDTOsFromMapper.get(0));
         when(postMapper.toDTO(mockPostsFromRepository.get(1))).thenReturn(mockDTOsFromMapper.get(1));
