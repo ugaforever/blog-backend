@@ -59,8 +59,8 @@ public class PostServiceUTest {
 
         doReturn(mockPostsFromRepository).when(postRepository).search(
                 any(String.class),
-                isNull(),
-                isNull(),
+                any(String.class),
+                any(String.class),
                 eq(0),
                 anyInt()
         );
