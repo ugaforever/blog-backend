@@ -69,6 +69,7 @@ public class PostServiceUTest {
                 any(String.class)
         )).thenReturn(20L);
 
+
         when(postMapper.toDTO(mockPostsFromRepository.get(0))).thenReturn(mockDTOsFromMapper.get(0));
         when(postMapper.toDTO(mockPostsFromRepository.get(1))).thenReturn(mockDTOsFromMapper.get(1));
 
