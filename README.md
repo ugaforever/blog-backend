@@ -5,4 +5,4 @@
 ## Задание
 Переписать бэкенд приложения-блога с использованием инструмента Spring Boot и Spring Boot Test.
 
-Бэкенд приложения-блога на Java с использованием Spring Framework https://github.com/ugaforever/my-blog-back-app/tree/module_one_sprint_three_branch
+Бэкенд приложения-блога на Java с использованием Spring Framework https://github.com/ugaforever/blog-backend/tree/module_one_sprint_three_branch
